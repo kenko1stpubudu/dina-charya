@@ -86,7 +86,7 @@ airplane mode එකේ වුණත් ඕන වෙලාවක විවෘ�
 `sw.js` ෆයිල් එකේ මුලින්ම තියෙන මේ පේළිය වෙනස් කරන්න:
 
 ```js
-var CACHE = 'dina-charya-v2';   // → 'dina-charya-v3'
+var CACHE = 'dina-charya-v5';   // → 'dina-charya-v6'
 ```
 
 මේක වෙනස් නොකළොත් ෆෝන් එකේ පරණ එකම තියෙනවා, අලුත් එක එන්නේ නෑ.

@@ -56,11 +56,14 @@ body{
 #dc .tally span{font-family:var(--mono);font-size:14px;color:var(--muted)}
 #dc .tally small{display:block;font-size:11px;color:var(--muted);margin-top:1px}
 
-#dc .stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
-#dc .stat{border:1px solid var(--thread);border-radius:10px;padding:11px 13px;background:var(--raised)}
-#dc .stat b{display:block;font-family:var(--mono);font-size:19px;font-weight:500;line-height:1.3}
-#dc .stat.s1 b{color:var(--jade)} #dc .stat.s2 b{color:var(--lamp)}
-#dc .stat span{font-size:11.5px;color:var(--muted)}
+#dc .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+#dc .stat{border:1px solid var(--thread);border-radius:10px;padding:11px 10px;background:var(--raised);
+  text-align:left;font:inherit;color:inherit}
+#dc .stat b{display:block;font-family:var(--mono);font-size:20px;font-weight:500;line-height:1.25}
+#dc .stat.s1 b{color:var(--jade)} #dc .stat.s2 b{color:var(--lamp)} #dc .stat.s3 b{color:var(--paper)}
+#dc .stat span{display:block;font-size:10.5px;color:var(--muted);line-height:1.4;margin-top:3px}
+#dc button.stat{cursor:pointer}
+#dc button.stat:hover{border-color:var(--muted)}
 
 #dc .sec{margin-top:30px}
 #dc .sechead{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
@@ -92,6 +95,7 @@ body{
 #dc .knot.off{opacity:.32}
 #dc .mini{background:none;border:1px solid rgba(232,181,74,.4);color:var(--lamp);border-radius:7px;
   padding:6px 12px;font-family:var(--sans);font-size:12px;cursor:pointer;white-space:nowrap}
+#dc .mini.jadeb{border-color:rgba(127,182,161,.4);color:var(--jade)}
 #dc .sw{width:38px;height:22px;border-radius:100px;border:1px solid var(--thread);background:var(--night);
   cursor:pointer;padding:0;position:relative;margin-top:2px;transition:all .2s;flex:0 0 auto}
 #dc .sw::after{content:'';position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;
@@ -156,7 +160,36 @@ body{
 #dc .vbtn{background:var(--lamp);color:#1A1206;border:0;border-radius:100px;padding:13px 30px;
   font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer}
 #dc .vbtn.sub{background:none;border:1px solid var(--thread);color:var(--muted);font-weight:400}
-#dc .vnote{font-size:12px;color:var(--muted);margin-top:26px;text-align:center;max-width:290px;line-height:1.65}
+#dc .vnote{font-size:12px;color:var(--muted);margin-top:26px;text-align:center;max-width:300px;line-height:1.65}
+
+/* deep work overlay — a filling rule instead of a dial, and jade instead of gold */
+#dc .wbig{font-family:var(--mono);font-size:66px;font-weight:400;letter-spacing:-2px;line-height:1}
+#dc .wrule{width:min(300px,74vw);height:3px;background:var(--thread);border-radius:2px;margin-top:26px;overflow:hidden}
+#dc .wrule i{display:block;height:100%;background:var(--jade);border-radius:2px;transition:width 1s linear}
+#dc .wmeta{display:flex;gap:18px;margin-top:20px;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+#dc .wmeta b{font-weight:500;color:var(--paper)}
+#dc .wmeta b.warn{color:#E0A79F}
+#dc .pick.jade.on{border-color:var(--jade);color:var(--jade);background:rgba(127,182,161,.1)}
+#dc .vbtn.jade{background:var(--jade);color:#0F1A16}
+#dc .tagrow{display:flex;gap:7px;margin-top:24px;flex-wrap:wrap;justify-content:center}
+#dc .tagrow .pick{font-family:var(--sans);font-size:12.5px;padding:7px 15px}
+#dc .split{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-top:22px;
+  font-family:var(--mono);font-size:11px;color:var(--muted)}
+#dc .split b{font-weight:500;color:var(--paper)}
+#dc .split i{color:var(--thread);font-style:normal}
+#dc .lvl{font-family:var(--mono);font-size:11px;color:var(--muted)}
+#dc .card{border:1px solid var(--thread);border-radius:12px;background:var(--raised);
+  padding:16px 15px;margin-top:13px}
+#dc .topic{font-family:var(--serif);font-size:26px;line-height:1.35;letter-spacing:-.2px;
+  text-align:center;max-width:340px}
+#dc .topic.sm{font-size:18px;line-height:1.45;text-align:left;max-width:none}
+#dc .topicsi{font-size:12.5px;color:var(--muted);margin-top:7px;line-height:1.5;text-align:center;max-width:340px}
+#dc .topic.sm + .topicsi{text-align:left;max-width:none}
+#dc .cardbtns{display:flex;gap:8px;margin-top:15px;flex-wrap:wrap}
+#dc .pats{display:flex;flex-direction:column;gap:6px;margin-top:26px;align-items:center;max-width:330px}
+#dc .pats em{font-style:normal;font-family:var(--sans);font-size:11px;color:var(--muted);
+  letter-spacing:.5px;margin-bottom:3px}
+#dc .pats span{font-family:var(--serif);font-size:14px;color:var(--jade);text-align:center;line-height:1.4}
 
 #dc .sheet{position:fixed;inset:0;z-index:70;background:rgba(9,13,19,.9);display:flex;
   align-items:flex-end;justify-content:center;padding:0}
@@ -185,30 +218,56 @@ body{
 <script>
 (function(){
 "use strict";
-var VER='2.0', KEY='dinacharya:v1', root=document.getElementById('dc');
+var VER='3.2', KEY='dinacharya:v1', root=document.getElementById('dc');
 
 var DAYS=['ඉරිදා','සඳුදා','අඟහරුවාදා','බදාදා','බ්‍රහස්පතින්දා','සිකුරාදා','සෙනසුරාදා'];
 var DAYS_S=['ඉරි','සඳු','අඟ','බදා','බ්‍රහ','සිකු','සෙන'];
 var MONTHS=['ජනවාරි','පෙබරවාරි','මාර්තු','අප්‍රේල්','මැයි','ජූනි','ජූලි','අගෝස්තු','සැප්තැම්බර්','ඔක්තෝබර්','නොවැම්බර්','දෙසැම්බර්'];
 
+var TOPICS=[{"id":"t1","l":1,"e":"Describe your room.","s":"ඔයාගේ කාමරය විස්තර කරන්න."},{"id":"t2","l":1,"e":"What did you eat today?","s":"අද මොනවද කෑවේ?"},{"id":"t3","l":1,"e":"Describe your route to work.","s":"වැඩට යන පාර විස්තර කරන්න."},{"id":"t4","l":1,"e":"What is on your desk right now?","s":"දැන් මේසය උඩ මොනවද තියෙන්නේ?"},{"id":"t5","l":1,"e":"Describe the weather today.","s":"අද කාලගුණය විස්තර කරන්න."},{"id":"t6","l":1,"e":"What are you wearing?","s":"ඔයා අඳගෙන ඉන්නේ මොනවද?"},{"id":"t7","l":1,"e":"Describe your phone.","s":"ඔයාගේ ෆෝන් එක විස්තර කරන්න."},{"id":"t8","l":1,"e":"Who lives in your house?","s":"ගෙදර ඉන්නේ කවුද?"},{"id":"t9","l":1,"e":"Describe your workplace.","s":"වැඩ කරන තැන විස්තර කරන්න."},{"id":"t10","l":1,"e":"What is in your bag?","s":"බෑග් එකේ මොනවද තියෙන්නේ?"},{"id":"t11","l":1,"e":"Describe your best friend.","s":"හොඳම යාළුවා විස්තර කරන්න."},{"id":"t12","l":1,"e":"What do you do on a normal morning?","s":"සාමාන්‍ය උදෑසනක් කොහොමද?"},{"id":"t13","l":1,"e":"Describe your town.","s":"ඔයාගේ නගරය විස්තර කරන්න."},{"id":"t14","l":1,"e":"What is your favourite food and why?","s":"කැමතිම කෑම මොකක්ද, ඇයි?"},{"id":"t15","l":1,"e":"Describe a shop you go to often.","s":"නිතර යන කඩයක් විස්තර කරන්න."},{"id":"t16","l":1,"e":"What does your job involve?","s":"ඔයාගේ රැකියාවේ මොනවද කරන්නේ?"},{"id":"t17","l":1,"e":"Describe the last thing you bought.","s":"අන්තිමට ගත්ත දේ විස්තර කරන්න."},{"id":"t18","l":1,"e":"Describe a family member.","s":"පවුලේ කෙනෙක් විස්තර කරන්න."},{"id":"t19","l":1,"e":"What does your house look like?","s":"ගෙදර පේන්නේ කොහොමද?"},{"id":"t20","l":1,"e":"Describe the road outside your house.","s":"ගෙදර ඉස්සරහ පාර විස්තර කරන්න."},{"id":"t21","l":1,"e":"What do you usually drink?","s":"සාමාන්‍යයෙන් බොන්නේ මොනවද?"},{"id":"t22","l":1,"e":"Describe someone you work with.","s":"එක්ක වැඩ කරන කෙනෙක් විස්තර කරන්න."},{"id":"t23","l":1,"e":"What is your favourite time of day?","s":"දවසේ කැමතිම වෙලාව මොකක්ද?"},{"id":"t24","l":1,"e":"Describe the bus or train you take.","s":"යන බස් එක හෝ දුම්රිය විස්තර කරන්න."},{"id":"t25","l":1,"e":"What do you do after work?","s":"වැඩ ඉවර වුණාට පස්සේ මොනවද කරන්නේ?"},{"id":"t26","l":1,"e":"Describe your kitchen.","s":"කුස්සිය විස්තර කරන්න."},{"id":"t27","l":1,"e":"What kind of clothes do you like?","s":"මොන වගේ ඇඳුම්වලටද කැමති?"},{"id":"t28","l":1,"e":"Describe a place near your home.","s":"ගෙදර ළඟ තැනක් විස්තර කරන්න."},{"id":"t29","l":1,"e":"Describe your neighbour.","s":"අසල්වැසියා විස්තර කරන්න."},{"id":"t30","l":1,"e":"What do you do on Sundays?","s":"ඉරිදාට මොනවද කරන්නේ?"},{"id":"t31","l":1,"e":"What do you carry every day?","s":"හැමදාම ගෙනියන දේවල් මොනවද?"},{"id":"t32","l":1,"e":"Describe a market you have visited.","s":"ගිය පොළක් විස්තර කරන්න."},{"id":"t33","l":1,"e":"What time do you do things during the day?","s":"දවසේ මොන වෙලාවට මොනවද කරන්නේ?"},{"id":"t34","l":1,"e":"Describe the view from your window.","s":"ජනේලයෙන් පේන දේ විස්තර කරන්න."},{"id":"t35","l":1,"e":"What is your morning routine?","s":"උදෑසන දින චර්යාව මොකක්ද?"},{"id":"t36","l":2,"e":"What did you do last weekend?","s":"ගිය සති අන්තයේ මොනවද කළේ?"},{"id":"t37","l":2,"e":"Tell me about your last holiday.","s":"අන්තිම නිවාඩුව ගැන කියන්න."},{"id":"t38","l":2,"e":"How do you make a cup of tea?","s":"තේ එකක් හදන්නේ කොහොමද?"},{"id":"t39","l":2,"e":"What did you do yesterday, hour by hour?","s":"ඊයේ පැයෙන් පැය මොනවද කළේ?"},{"id":"t40","l":2,"e":"Tell me about your first job.","s":"පළමු රැකියාව ගැන කියන්න."},{"id":"t41","l":2,"e":"What are you doing next weekend?","s":"ලබන සති අන්තයේ මොනවද කරන්නේ?"},{"id":"t42","l":2,"e":"Tell me about a time you were late.","s":"පරක්කු වුණු වෙලාවක් ගැන කියන්න."},{"id":"t43","l":2,"e":"How do you get to the nearest town?","s":"ළඟම නගරයට යන්නේ කොහොමද?"},{"id":"t44","l":2,"e":"Tell me about your school days.","s":"පාසල් කාලය ගැන කියන්න."},{"id":"t45","l":2,"e":"What happened the last time you were sick?","s":"අන්තිමට අසනීප වුණාම මොකද වුණේ?"},{"id":"t46","l":2,"e":"How do you cook rice?","s":"බත් උයන්නේ කොහොමද?"},{"id":"t47","l":2,"e":"Tell me about a wedding you attended.","s":"ගිය මංගල්‍යයක් ගැන කියන්න."},{"id":"t48","l":2,"e":"What did you want to be as a child?","s":"පොඩි කාලේ මොකද වෙන්න හිතුවේ?"},{"id":"t49","l":2,"e":"Explain your job step by step.","s":"ඔයාගේ රැකියාව පියවරෙන් පියවර පැහැදිලි කරන්න."},{"id":"t50","l":2,"e":"Tell me about a journey you remember.","s":"මතක තියෙන ගමනක් ගැන කියන්න."},{"id":"t51","l":2,"e":"What changed in your life in the last five years?","s":"ගිය අවුරුදු පහේ මොනවද වෙනස් වුණේ?"},{"id":"t52","l":2,"e":"Tell me about a festival you celebrate.","s":"ඔයා සමරන උත්සවයක් ගැන කියන්න."},{"id":"t53","l":2,"e":"What did you do on your last birthday?","s":"අන්තිම උපන්දිනයට මොනවද කළේ?"},{"id":"t54","l":2,"e":"How do you handle a difficult customer?","s":"අමාරු කස්ටමර් කෙනෙක්ට මුහුණ දෙන්නේ කොහොමද?"},{"id":"t55","l":2,"e":"Tell me about a time you helped someone.","s":"කාටහරි උදව් කරපු වෙලාවක් ගැන කියන්න."},{"id":"t56","l":2,"e":"What are your plans for this year?","s":"මේ අවුරුද්දේ සැලසුම් මොනවද?"},{"id":"t57","l":2,"e":"Tell me about someone who taught you something.","s":"මොකක්හරි උගන්නපු කෙනෙක් ගැන කියන්න."},{"id":"t58","l":2,"e":"What did you learn last week?","s":"ගිය සතියේ මොනවද ඉගෙන ගත්තේ?"},{"id":"t59","l":2,"e":"How do you decide what to buy?","s":"මොනවද ගන්නේ කියලා තීරණය කරන්නේ කොහොමද?"},{"id":"t60","l":2,"e":"Tell me about a time you got lost.","s":"අතරමං වුණු වෙලාවක් ගැන කියන්න."},{"id":"t61","l":2,"e":"What is a typical day at your workplace?","s":"වැඩ කරන තැන සාමාන්‍ය දවසක් කොහොමද?"},{"id":"t62","l":2,"e":"Tell me about the last film or show you watched.","s":"අන්තිමට බැලුව චිත්‍රපටය ගැන කියන්න."},{"id":"t63","l":2,"e":"What did you do when you finished school?","s":"පාසල ඉවර වුණාම මොනවද කළේ?"},{"id":"t64","l":2,"e":"How do you save money?","s":"මුදල් ඉතිරි කරන්නේ කොහොමද?"},{"id":"t65","l":2,"e":"Tell me about a problem you solved.","s":"විසඳපු ප්‍රශ්නයක් ගැන කියන්න."},{"id":"t66","l":2,"e":"How do you use your phone during the day?","s":"දවසේ ෆෝන් එක පාවිච්චි කරන්නේ කොහොමද?"},{"id":"t67","l":2,"e":"Tell me about your childhood home.","s":"ළමා කාලේ ගෙදර ගැන කියන්න."},{"id":"t68","l":2,"e":"What do you want to do in five years?","s":"අවුරුදු පහකින් මොනවද කරන්න ඕන?"},{"id":"t69","l":2,"e":"How do you keep in touch with friends?","s":"යාළුවො එක්ක සම්බන්ධය තියාගන්නේ කොහොමද?"},{"id":"t70","l":2,"e":"Explain how to get from your home to the city.","s":"ගෙදර ඉඳන් නගරයට යන විදිහ පැහැදිලි කරන්න."},{"id":"t71","l":3,"e":"Is it better to live in a village or a city? Why?","s":"ගමේද නගරයේද ජීවත් වෙන එක හොඳ? ඇයි?"},{"id":"t72","l":3,"e":"What makes a good boss?","s":"හොඳ ලොක්කෙක්ගේ ලක්ෂණ මොනවද?"},{"id":"t73","l":3,"e":"Should children use phones? Why or why not?","s":"ළමයි ෆෝන් පාවිච්චි කරන්න ඕනද? ඇයි?"},{"id":"t74","l":3,"e":"What would you do with a large amount of money?","s":"ලොකු මුදලක් ලැබුණොත් මොනවද කරන්නේ?"},{"id":"t75","l":3,"e":"Is it better to save or to spend? Why?","s":"ඉතිරි කරන එකද වියදම් කරන එකද හොඳ? ඇයි?"},{"id":"t76","l":3,"e":"What makes someone successful?","s":"කෙනෙක් සාර්ථක වෙන්නේ මොකෙන්ද?"},{"id":"t77","l":3,"e":"How has technology changed your life?","s":"තාක්ෂණය ඔයාගේ ජීවිතේ වෙනස් කළේ කොහොමද?"},{"id":"t78","l":3,"e":"What is the most important quality in a friend?","s":"යාළුවෙක්ගේ වැදගත්ම ගුණය මොකක්ද?"},{"id":"t79","l":3,"e":"Would you like to live in another country? Why?","s":"වෙන රටක ජීවත් වෙන්න කැමතිද? ඇයි?"},{"id":"t80","l":3,"e":"Is it better to learn from books or from experience?","s":"පොත්වලින්ද අත්දැකීමෙන්ද ඉගෙන ගන්න එක හොඳ?"},{"id":"t81","l":3,"e":"What advice would you give your younger self?","s":"තරුණ කාලේ ඔයාට මොන උපදෙසද දෙන්නේ?"},{"id":"t82","l":3,"e":"Should everyone learn a second language? Why?","s":"හැමෝම දෙවන භාෂාවක් ඉගෙන ගන්න ඕනද? ඇයි?"},{"id":"t83","l":3,"e":"Is money or time more valuable? Why?","s":"මුදල්ද කාලයද වටිනේ? ඇයි?"},{"id":"t84","l":3,"e":"What makes good customer service?","s":"හොඳ කස්ටමර් සේවාවක් කියන්නේ මොකක්ද?"},{"id":"t85","l":3,"e":"How would your life change without the internet?","s":"අන්තර්ජාලය නැත්නම් ජීවිතේ කොහොමද වෙන්නේ?"},{"id":"t86","l":3,"e":"What is the hardest thing about your job?","s":"රැකියාවේ අමාරුම දේ මොකක්ද?"},{"id":"t87","l":3,"e":"Should people work from home? Discuss both sides.","s":"ගෙදර ඉඳන් වැඩ කරන එක ගැන දෙපැත්තම කතා කරන්න."},{"id":"t88","l":3,"e":"What does a good life mean to you?","s":"හොඳ ජීවිතයක් කියන්නේ ඔයාට මොකක්ද?"},{"id":"t89","l":3,"e":"Is it better to be busy or to have free time?","s":"කාර්යබහුලද නිදහස්ද හොඳ?"},{"id":"t90","l":3,"e":"What would you change about your city?","s":"ඔයාගේ නගරයේ මොකද වෙනස් කරන්නේ?"},{"id":"t91","l":3,"e":"How do you decide whom to trust?","s":"කාවද විශ්වාස කරන්නේ කියලා තීරණය කරන්නේ කොහොමද?"},{"id":"t92","l":3,"e":"What is more important: talent or hard work?","s":"දක්ෂතාවද වෙහෙසද වැදගත්?"},{"id":"t93","l":3,"e":"What would you do if you lost your job tomorrow?","s":"හෙට රැකියාව නැති වුණොත් මොනවද කරන්නේ?"},{"id":"t94","l":3,"e":"Is social media good or bad? Explain.","s":"සමාජ මාධ්‍ය හොඳද නරකද? පැහැදිලි කරන්න."},{"id":"t95","l":3,"e":"What makes people happy?","s":"මිනිස්සු සතුටු වෙන්නේ මොකෙන්ද?"},{"id":"t96","l":3,"e":"How should companies treat their workers?","s":"සමාගම් සේවකයන්ට සලකන්න ඕන කොහොමද?"},{"id":"t97","l":3,"e":"What is the value of learning a language?","s":"භාෂාවක් ඉගෙන ගන්න එකේ වටිනාකම මොකක්ද?"},{"id":"t98","l":3,"e":"If you could meet anyone, who would it be and why?","s":"ඕන කෙනෙක් හම්බවෙන්න පුළුවන් නම් කවුද, ඇයි?"},{"id":"t99","l":3,"e":"What is a habit you want to change and why?","s":"වෙනස් කරන්න ඕන පුරුද්දක් මොකක්ද, ඇයි?"},{"id":"t100","l":3,"e":"What responsibility do we have to our parents?","s":"දෙමාපියන්ට අපේ වගකීම මොකක්ද?"},{"id":"t101","l":3,"e":"How do you know when a decision is right?","s":"තීරණයක් හරි කියලා දැනගන්නේ කොහොමද?"},{"id":"t102","l":3,"e":"What would you tell a foreigner about your country?","s":"විදේශිකයෙකුට ඔයාගේ රට ගැන මොකද කියන්නේ?"},{"id":"t103","l":3,"e":"Is it better to plan or to be spontaneous?","s":"සැලසුම් කරන එකද එතනම තීරණය කරන එකද හොඳ?"},{"id":"t104","l":3,"e":"How do you deal with stress?","s":"ආතතියට මුහුණ දෙන්නේ කොහොමද?"},{"id":"t105","l":3,"e":"What have you changed your mind about?","s":"මොකක් ගැනද ඔයාගේ අදහස වෙනස් වුණේ?"}];
+var PATS=["I'd say...","It depends on...","What I mean is...","To be honest, ...","The thing is, ...","I'm not sure, but I think...","As far as I know, ...","In my case, ...","That's a good question.","It's kind of like...","I used to..., but now...","If I were you, I'd...","The reason is that...","For example, ...","On the other hand, ...","I've never really thought about it.","It takes about...","I'm supposed to...","It turned out that...","I was about to...","I'd rather...","I ended up...","Compared to..., ...","What I usually do is...","It's hard to say.","Let me put it another way.","That reminds me of...","I'm looking forward to...","It makes me feel...","As soon as..., ...","Not only that, but...","To be fair, ...","I'm still getting used to...","It's not that..., it's just...","The way I see it, ...","I've been meaning to...","More or less.","At the end of the day, ...","I can't really explain it, but...","It's better than nothing."];
+
 var DEFAULTS=[
   {id:'wake',   t:'05:30',p:'උදෑසන',title:'නියමිත වේලාවට නැගිටීම',note:'හැමදාම එකම වෙලාව — සති අන්තයේත්',anchor:true},
   {id:'nophone',t:'05:35',p:'උදෑසන',title:'නැගිට පළමු පැය ෆෝන් එක නෑ',note:'ඇලාම් එක විතරයි'},
   {id:'medit',  t:'05:45',p:'උදෑසන',title:'භාවනාව',note:'මුලින්ම විනාඩි 10යි. ඒක ඇති.',anchor:true,med:true},
-  {id:'move',   t:'06:15',p:'උදෑසන',title:'ඇවිදීම හෝ ව්‍යායාම',note:'විනාඩි 20–30'},
-  {id:'mit',    t:'09:00',p:'දහවල', title:'දවසේ වැදගත්ම වැඩේ මුලින්ම',note:'එකයි — ලැයිස්තුවක් නෙවෙයි'},
-  {id:'learn',  t:'19:00',p:'සවස',  title:'විනාඩි 20ක් කියවීම හෝ ඉගෙනීම'},
-  {id:'dhamma', t:'19:30',p:'සවස',  title:'දහම් ශ්‍රවණය හෝ කියවීම'},
+  {id:'light',  t:'06:15',p:'උදෑසන',title:'උදෑසන හිරු එළිය',note:'විනාඩි 10–15, එළියේ. රෑට නින්ද කලින් එන්නේ මේකෙන්.'},
+  {id:'move',   t:'06:20',p:'උදෑසන',title:'ඇවිදීම හෝ ව්‍යායාම',note:'විනාඩි 20–30. එළියේ ඇවිද්දොත් උඩ එකත් එකට වෙනවා.'},
+  {id:'study',  t:'06:45',p:'උදෑසන',title:'ගැඹුරු වැඩ — ඉංග්‍රීසි',note:'හයියෙන් කතා කරන්න. විනාඩි 50.',work:true},
+  {id:'mit',    t:'09:00',p:'දහවල', title:'දවසේ වැදගත්ම වැඩේ මුලින්ම',note:'එකයි — ලැයිස්තුවක් නෙවෙයි',work:true},
+  {id:'ja',     t:'19:00',p:'සවස',  title:'ජපන් — විනාඩි 15',note:'හෙට වැඩේට කියන්න පුළුවන් වචන 5ක්'},
+  {id:'learn',  t:'19:20',p:'සවස',  title:'කියවීම'},
+  {id:'dhamma', t:'19:45',p:'සවස',  title:'දහම් ශ්‍රවණය හෝ කියවීම'},
   {id:'spend',  t:'20:30',p:'සවස',  title:'අද වියදම් සටහන් කිරීම',note:'විනාඩියයි යන්නේ'},
   {id:'offline',t:'21:00',p:'රාත්‍රී',title:'නින්දට පැයකට කලින් ෆෝන් එක පැත්තකට'},
   {id:'journal',t:'21:30',p:'රාත්‍රී',title:'දිනපොත — අද හොඳ දෙයක් එකක්'},
   {id:'sleep',  t:'22:00',p:'රාත්‍රී',title:'නියමිත වේලාවට නින්ද',anchor:true}
 ];
 
-var FRESH={off:{},log:{},goal:25000,entries:[],med:{total:0,len:10,days:{}}};
+var FRESH={off:{},log:{},goal:25000,entries:[],
+  med:{total:0,len:10,days:{}},
+  work:{total:0,len:50,days:{},clean:0,tags:{en:0,ja:0,other:0}},
+  speak:{level:1,done:{},again:[],count:0,mins:0,len:3,cur:null,pats:[]}};
 var S=JSON.parse(JSON.stringify(FRESH));
 var editing=false, actx=null, installEvt=null, sheet=null, sheetText='', msg=null;
 var T={open:false,len:10,left:0,running:false,tick:null,t0:0};
+var W={open:false,len:50,left:0,running:false,tick:null,t0:0,breaks:0,tag:'en'};
+var TAGS=[['en','ඉංග්‍රීසි'],['ja','ජපන්'],['other','වෙනත්']];
+var Pr={open:false,left:0,running:false,tick:null,t0:0,rate:false};
+
+/* keep the screen awake while a timer runs, otherwise the phone locks
+   and the closing bell never rings */
+var wl=null;
+function lockScreen(){
+  try{
+    if('wakeLock' in navigator && !wl){
+      navigator.wakeLock.request('screen').then(function(s){
+        wl=s; s.addEventListener('release',function(){wl=null;});
+      }).catch(function(){});
+    }
+  }catch(e){}
+}
+function unlockScreen(){ try{ if(wl){ wl.release(); wl=null; } }catch(e){} }
 
 /* ---------- storage: Claude preview -> localStorage -> memory ---------- */
 var mem=null;
@@ -244,6 +303,13 @@ function hoursText(m){
   if(m<60) return 'විනාඩි '+m;
   var h=Math.floor(m/60), r=m%60;
   return 'පැය '+h+(r?' විනාඩි '+r:'');
+}
+/* big number stays clean, the unit lives down in the label */
+function compact(m){
+  m=Math.round(m||0);
+  if(m<60) return {n:String(m),u:'විනාඩි'};
+  var h=m/60;
+  return {n:(h<10?h.toFixed(1).replace(/\.0$/,''):String(Math.round(h))),u:'පැය'};
 }
 function moonPhase(d){var s=29.530588853,k=Date.UTC(2000,0,6,18,14);
   var p=(((d.getTime()-k)/86400000)%s)/s;return p<0?p+1:p;}
@@ -286,7 +352,7 @@ function bell(){
 
 /* ---------- meditation ---------- */
 function startTimer(){
-  bell();
+  bell(); lockScreen();
   T.left=T.len*60; T.running=true; T.t0=Date.now();
   if(T.tick) clearInterval(T.tick);
   T.tick=setInterval(function(){
@@ -296,7 +362,7 @@ function startTimer(){
   render();
 }
 function finishTimer(){
-  clearInterval(T.tick); T.tick=null; T.running=false; bell();
+  clearInterval(T.tick); T.tick=null; T.running=false; unlockScreen(); bell();
   var k=ymd(new Date());
   S.med.total+=T.len; S.med.len=T.len;
   S.med.days[k]=(S.med.days[k]||0)+T.len;
@@ -305,7 +371,7 @@ function finishTimer(){
   T.open=false; T.left=0; save(); render();
 }
 function stopTimer(){
-  clearInterval(T.tick); T.tick=null;
+  clearInterval(T.tick); T.tick=null; unlockScreen();
   var d=Math.floor((T.len*60-T.left)/60);
   T.running=false; T.left=0;
   if(d>=1){ var k=ymd(new Date()); S.med.total+=d; S.med.days[k]=(S.med.days[k]||0)+d; save(); }
@@ -331,6 +397,176 @@ function veil(){
     :'<button class="vbtn" data-start>පටන් ගන්න</button><button class="vbtn sub" data-close>වහන්න</button>';
   h+='</div>';
   if(!T.running) h+='<div class="vnote">සති දෙකක් එකම කාලය තියාගන්න. පුරුදු වුණාට පස්සේ විනාඩි 5ක් වැඩි කරන්න — එකපාරට නෙවෙයි.</div>';
+  return h+'</div>';
+}
+
+/* ---------- speaking practice ---------- */
+function topicById(id){ for(var i=0;i<TOPICS.length;i++) if(TOPICS[i].id===id) return TOPICS[i]; return null; }
+function levelPool(l){ return TOPICS.filter(function(t){return t.l===l;}); }
+
+function pickTopic(){
+  var sp=S.speak;
+  // sometimes bring back one that was marked hard
+  if(sp.again.length && Math.random()<.4) return sp.again[Math.floor(Math.random()*sp.again.length)];
+  var pool=levelPool(sp.level).filter(function(t){return !sp.done[t.id];});
+  if(!pool.length && sp.level<3){                 // level cleared, move up
+    sp.level++;
+    pool=levelPool(sp.level).filter(function(t){return !sp.done[t.id];});
+  }
+  if(!pool.length){                                // everything seen: revisit the least practised
+    pool=TOPICS.slice().sort(function(a,b){return (sp.done[a.id]||0)-(sp.done[b.id]||0);}).slice(0,15);
+  }
+  return pool[Math.floor(Math.random()*pool.length)].id;
+}
+function newTopic(){
+  var sp=S.speak;
+  sp.cur=pickTopic();
+  var idx=[],i;
+  while(idx.length<3){ i=Math.floor(Math.random()*PATS.length); if(idx.indexOf(i)<0) idx.push(i); }
+  sp.pats=idx;
+  save();
+}
+function ensureTopic(){ if(!S.speak.cur||!topicById(S.speak.cur)) newTopic(); }
+
+function startSpeak(){
+  bell(); lockScreen();
+  Pr.left=S.speak.len*60; Pr.running=true; Pr.rate=false; Pr.t0=Date.now();
+  if(Pr.tick) clearInterval(Pr.tick);
+  Pr.tick=setInterval(function(){
+    Pr.left=Math.max(0,S.speak.len*60-Math.round((Date.now()-Pr.t0)/1000));
+    if(Pr.left<=0) endSpeak(); else render();
+  },1000);
+  render();
+}
+function endSpeak(){
+  clearInterval(Pr.tick); Pr.tick=null; Pr.running=false; unlockScreen(); bell();
+  var sp=S.speak, mins=sp.len;
+  sp.count++; sp.mins+=mins;
+  sp.done[sp.cur]=(sp.done[sp.cur]||0)+1;
+  W.tag='en'; creditWork(mins);          // speaking counts as English deep work
+  Pr.rate=true; save(); render();
+}
+function stopSpeak(){
+  clearInterval(Pr.tick); Pr.tick=null; unlockScreen();
+  Pr.running=false; Pr.rate=false; Pr.open=false; render();
+}
+function rateTopic(hard){
+  var sp=S.speak, i=sp.again.indexOf(sp.cur);
+  if(hard){ if(i<0) sp.again.push(sp.cur); }
+  else if(i>-1) sp.again.splice(i,1);
+  newTopic(); Pr.rate=false; Pr.open=false; render();
+}
+
+function speakVeil(){
+  var sp=S.speak, t=topicById(sp.cur);
+  if(!t) return '';
+  var h='<div class="veil"><div class="who">කතා කිරීමේ පුහුණුව</div>';
+
+  if(Pr.rate){
+    h+='<div class="topic">'+esc(t.e)+'</div>'+
+       '<div class="vnote" style="margin-top:14px">කොහොමද ගියේ? අමාරු ඒවා ආපහු එනවා.</div>'+
+       '<div class="vbtns"><button class="vbtn jade" data-easy>ලේසියි</button>'+
+       '<button class="vbtn sub" data-hard>ආපහු ඕන</button></div>';
+    return h+'</div>';
+  }
+
+  h+='<div class="topic">'+esc(t.e)+'</div><div class="topicsi">'+esc(t.s)+'</div>';
+
+  if(Pr.running){
+    h+='<div class="wbig" style="margin-top:26px">'+mmss(Pr.left)+'</div>'+
+       '<div class="vnote">නවත්තන්න එපා. වචනයක් නැති වුණොත් වෙන විදිහකින් කියන්න.</div>'+
+       '<div class="vbtns"><button class="vbtn sub" data-pstop>නවත්වන්න</button></div>';
+    return h+'</div>';
+  }
+
+  h+='<div class="pats"><em>මේ රටා පාවිච්චි කරන්න බලන්න</em>';
+  sp.pats.forEach(function(i){ h+='<span>'+esc(PATS[i])+'</span>'; });
+  h+='</div><div class="picks">';
+  [2,3,5].forEach(function(m){
+    h+='<button class="pick jade'+(m===sp.len?' on':'')+'" data-plen="'+m+'">'+m+'</button>';});
+  h+='</div><div class="vbtns"><button class="vbtn jade" data-pstart>පටන් ගන්න</button>'+
+     '<button class="vbtn sub" data-pskip>වෙන එකක්</button>'+
+     '<button class="vbtn sub" data-pclose>වහන්න</button></div>'+
+     '<div class="vnote">ෆෝන් එකේ පටිගත කරලා ආපහු අහන්න — ඔයාට ඔයාගේ වැරදි ඇහෙන එකම ක්‍රමය ඒකයි.</div>';
+  return h+'</div>';
+}
+
+/* ---------- deep work ---------- */
+function startWork(){
+  bell(); lockScreen();
+  W.left=W.len*60; W.running=true; W.breaks=0; W.t0=Date.now();
+  if(W.tick) clearInterval(W.tick);
+  W.tick=setInterval(function(){
+    W.left=Math.max(0,W.len*60-Math.round((Date.now()-W.t0)/1000));
+    if(W.left<=0) finishWork(); else render();
+  },1000);
+  render();
+}
+function creditWork(mins){
+  if(mins<1) return;
+  var k=ymd(new Date());
+  S.work.total+=mins;
+  S.work.days[k]=(S.work.days[k]||0)+mins;
+  if(!S.work.tags) S.work.tags={en:0,ja:0,other:0};
+  S.work.tags[W.tag]=(S.work.tags[W.tag]||0)+mins;
+  // a language session belongs to the morning block, everything else to the work block
+  var hab=(W.tag==='other')?'mit':'study';
+  var a=S.log[k]||(S.log[k]=[]);
+  if(a.indexOf(hab)<0) a.push(hab);
+}
+function finishWork(){
+  clearInterval(W.tick); W.tick=null; W.running=false; unlockScreen(); bell();
+  S.work.len=W.len; S.work.tag=W.tag;
+  creditWork(W.len);
+  if(W.breaks===0) S.work.clean=(S.work.clean||0)+1;
+  W.open=false; W.left=0; save(); render();
+}
+function stopWork(){
+  clearInterval(W.tick); W.tick=null; unlockScreen();
+  var d=Math.floor((W.len*60-W.left)/60);
+  W.running=false; W.left=0;
+  if(d>=1){ creditWork(d); save(); }
+  W.open=false; render();
+}
+function tagName(t){
+  for(var i=0;i<TAGS.length;i++) if(TAGS[i][0]===t) return TAGS[i][1];
+  return t;
+}
+function workVeil(){
+  var total=W.len*60, left=W.running?W.left:total;
+  var pct=total?((total-left)/total*100):0;
+  var h='<div class="veil"><div class="who">ගැඹුරු වැඩ</div>'+
+    '<div class="wbig">'+mmss(left)+'</div>'+
+    '<div class="wrule"><i style="width:'+pct+'%"></i></div>';
+
+  var tg=S.work.tags||{};
+  if(W.running){
+    h+='<div class="wmeta"><span>විෂය <b>'+tagName(W.tag)+'</b></span>'+
+       '<span>බාධා <b'+(W.breaks?' class="warn"':'')+'>'+W.breaks+'</b></span>'+
+       '<span>අද <b>'+hoursText(S.work.days[ymd(new Date())]||0)+'</b></span></div>';
+  }else{
+    h+='<div class="wmeta"><span>බාධා නැති සැසි <b>'+(S.work.clean||0)+'</b></span></div>'+
+       '<div class="tagrow">';
+    TAGS.forEach(function(p){
+      h+='<button class="pick jade'+(p[0]===W.tag?' on':'')+'" data-wtag="'+p[0]+'">'+p[1]+'</button>';});
+    h+='</div><div class="picks">';
+    [25,50,90].forEach(function(m){
+      h+='<button class="pick jade'+(m===W.len?' on':'')+'" data-wlen="'+m+'">'+m+'</button>';});
+    h+='</div><div class="split">'+
+      TAGS.map(function(p){
+        var v=tg[p[0]]||0;
+        return p[1]+' <b>'+(v?hoursText(v):'—')+'</b>';
+      }).join('<i>·</i>')+'</div>';
+  }
+
+  h+='<div class="vbtns">';
+  h+=W.running?'<button class="vbtn sub" data-wstop>නවත්වන්න</button>'
+    :'<button class="vbtn jade" data-wstart>පටන් ගන්න</button><button class="vbtn sub" data-wclose>වහන්න</button>';
+  h+='</div>';
+
+  h+='<div class="vnote">'+(W.running
+    ? 'ෆෝන් එක පෙරලලා දුරින් තියන්න. ඇප් එකෙන් එළියට ගියොත් බාධාවක් විදිහට ගණන් ගන්නවා.'
+    : 'මුලින්ම විනාඩි 25යි. ෆෝන් එක වෙන කාමරයක තියන්න පුළුවන් නම් හොඳම. තිරය නිවෙන්නේ නෑ.')+'</div>';
   return h+'</div>';
 }
 
@@ -364,10 +600,12 @@ function render(){
     '<div class="lunar'+(mn.poya?' poya':'')+'">'+mn.n+'</div></div>'+
     '<div class="tally"><b>'+done.length+'</b><span>/'+acts.length+'</span><small>අද</small></div></div>';
 
-  var st=streak();
-  h+='<div class="stats"><div class="stat s1"><b>'+st+'</b><span>'+
-    (st?'දිනක් අඛණ්ඩව':'අද පටන් ගමු')+'</span></div>'+
-    '<div class="stat s2"><b>'+hoursText(S.med.total)+'</b><span>මුළු භාවනා කාලය</span></div></div>';
+  var st=streak(), cm=compact(S.med.total), cw=compact(S.work.total);
+  h+='<div class="stats">'+
+    '<div class="stat s1"><b>'+st+'</b><span>දින<br>අඛණ්ඩව</span></div>'+
+    '<button class="stat s2" data-med><b>'+cm.n+'</b><span>භාවනා<br>'+cm.u+'</span></button>'+
+    '<button class="stat s3" data-work><b>'+cw.n+'</b><span>ගැඹුරු වැඩ<br>'+cw.u+'</span></button>'+
+    '</div>';
 
   h+='<div class="sec"><div class="sechead"><h2>දවසේ නූල</h2>'+
     '<button class="ghost" data-edit>'+(editing?'ඉවරයි':'පුරුදු තෝරන්න')+'</button></div>'+
@@ -388,10 +626,22 @@ function render(){
       '<span class="kx"><span class="title">'+esc(x.title)+'</span>'+
       (x.note?'<span class="note">'+esc(x.note)+'</span>':'')+'</span>';
     h+= editing ? '<button class="sw" data-off="'+x.id+'" role="switch" aria-checked="'+(!isOff)+'" aria-label="'+esc(x.title)+'"></button>'
-       : (x.med ? '<button class="mini" data-med>ටයිමරය</button>' : '<span></span>');
+       : (x.med  ? '<button class="mini" data-med>ටයිමරය</button>'
+       : (x.work ? '<button class="mini jadeb" data-work>ටයිමරය</button>' : '<span></span>'));
     h+='</div>';
   });
   h+='</div>';
+
+  ensureTopic();
+  var tp=topicById(S.speak.cur), lv=S.speak.level;
+  var seen=levelPool(lv).filter(function(x){return S.speak.done[x.id];}).length;
+  h+='<div class="sec"><div class="sechead"><h2>කතා කිරීමේ පුහුණුව</h2>'+
+    '<span class="lvl">මට්ටම '+lv+' · '+seen+'/'+levelPool(lv).length+'</span></div>'+
+    '<div class="card"><div class="topic sm">'+esc(tp.e)+'</div>'+
+    '<div class="topicsi">'+esc(tp.s)+'</div>'+
+    '<div class="cardbtns"><button class="act" data-speak>විනාඩි '+S.speak.len+'ක් කතා කරන්න</button>'+
+    '<button class="ghost" data-pskip>වෙන එකක්</button></div></div>'+
+    '<div class="hint">කතා කරපු මාතෘකා '+(S.speak.count||0)+' · '+hoursText(S.speak.mins||0)+'</div></div>';
 
   h+='<div class="sec"><h2>ගිය දින හත</h2><div class="week">';
   for(var i=6;i>=0;i--){
@@ -440,6 +690,8 @@ function render(){
     '<div class="ver">දින චර්යා '+VER+' · offline</div></div>';
 
   if(T.open) h+=veil();
+  if(W.open) h+=workVeil();
+  if(Pr.open) h+=speakVeil();
   if(sheet) h+=sheetHTML();
   root.innerHTML=h;
 }
@@ -455,14 +707,30 @@ function toggleHabit(id){
 root.addEventListener('click',function(ev){
   var t=ev.target.closest('[data-len],[data-start],[data-stop],[data-close],[data-med],[data-off],'+
     '[data-edit],[data-add],[data-del],[data-goal],[data-reset],[data-install],[data-out],[data-in],'+
-    '[data-copy],[data-restore],[data-sheetclose],[data-h]');
+    '[data-copy],[data-restore],[data-sheetclose],[data-wlen],[data-wstart],[data-wstop],'+
+    '[data-wclose],[data-work],[data-wtag],[data-speak],[data-plen],[data-pstart],'+
+    '[data-pstop],[data-pskip],[data-pclose],[data-easy],[data-hard],[data-h]');
   if(!t) return;
 
-  if(t.hasAttribute('data-len')){T.len=+t.getAttribute('data-len');T.left=T.len*60;render();}
+  if(t.hasAttribute('data-speak')){if(T.running||W.running)return;ensureTopic();Pr.open=true;Pr.rate=false;render();}
+  else if(t.hasAttribute('data-plen')){S.speak.len=+t.getAttribute('data-plen');save();render();}
+  else if(t.hasAttribute('data-pstart')) startSpeak();
+  else if(t.hasAttribute('data-pstop')) stopSpeak();
+  else if(t.hasAttribute('data-pskip')){newTopic();render();}
+  else if(t.hasAttribute('data-pclose')){Pr.open=false;render();}
+  else if(t.hasAttribute('data-easy')) rateTopic(false);
+  else if(t.hasAttribute('data-hard')) rateTopic(true);
+  else if(t.hasAttribute('data-wtag')){W.tag=t.getAttribute('data-wtag');render();}
+  else if(t.hasAttribute('data-wlen')){W.len=+t.getAttribute('data-wlen');W.left=W.len*60;render();}
+  else if(t.hasAttribute('data-wstart')) startWork();
+  else if(t.hasAttribute('data-wstop')) stopWork();
+  else if(t.hasAttribute('data-wclose')){W.open=false;render();}
+  else if(t.hasAttribute('data-work')){if(T.running)return;W.open=true;W.left=W.len*60;render();}
+  else if(t.hasAttribute('data-len')){T.len=+t.getAttribute('data-len');T.left=T.len*60;render();}
   else if(t.hasAttribute('data-start')) startTimer();
   else if(t.hasAttribute('data-stop')) stopTimer();
   else if(t.hasAttribute('data-close')){T.open=false;render();}
-  else if(t.hasAttribute('data-med')){T.open=true;T.left=T.len*60;render();}
+  else if(t.hasAttribute('data-med')){if(W.running)return;T.open=true;T.left=T.len*60;render();}
   else if(t.hasAttribute('data-off')){
     var o=t.getAttribute('data-off');
     if(S.off[o]) delete S.off[o]; else S.off[o]=1;
@@ -519,7 +787,24 @@ root.addEventListener('click',function(ev){
       S.med=o.med&&typeof o.med==='object'?o.med:{total:0,len:10,days:{}};
       if(typeof S.med.total!=='number') S.med.total=0;
       if(!S.med.days) S.med.days={};
-      T.len=S.med.len||10;
+      S.work=o.work&&typeof o.work==='object'?o.work:{total:0,len:50,days:{},clean:0};
+      if(typeof S.work.total!=='number') S.work.total=0;
+      if(!S.work.days) S.work.days={};
+      if(typeof S.work.clean!=='number') S.work.clean=0;
+      if(!S.work.tags) S.work.tags={en:0,ja:0,other:0};
+      S.speak=v.speak&&typeof v.speak==='object'?v.speak:JSON.parse(JSON.stringify(FRESH.speak));
+      if(!S.speak.done) S.speak.done={};
+      if(!Array.isArray(S.speak.again)) S.speak.again=[];
+      if(!Array.isArray(S.speak.pats)) S.speak.pats=[];
+      if(!S.speak.level) S.speak.level=1;
+      if(!S.speak.len) S.speak.len=3;
+      S.speak=o.speak&&typeof o.speak==='object'?o.speak:JSON.parse(JSON.stringify(FRESH.speak));
+      if(!S.speak.done) S.speak.done={};
+      if(!Array.isArray(S.speak.again)) S.speak.again=[];
+      if(!Array.isArray(S.speak.pats)) S.speak.pats=[];
+      if(!S.speak.level) S.speak.level=1;
+      if(!S.speak.len) S.speak.len=3;
+      T.len=S.med.len||10; W.len=S.work.len||50; W.tag=S.work.tag||'en';
       save(); sheet=null; msg=null; render();
     }catch(e){ msg={t:'පෙළ හරි නෑ. උපස්ථය මුළුමනින්ම අලවලා තියෙනවද බලන්න.',bad:true}; render(); }
   }
@@ -545,7 +830,18 @@ window.addEventListener('beforeinstallprompt',function(e){
 
 /* redraw when the app comes back after midnight */
 document.addEventListener('visibilitychange',function(){
-  if(!document.hidden&&!T.running&&!sheet) render();
+  if(document.hidden){
+    if(W.running) W.breaks++;          // left the app mid-session
+    return;
+  }
+  if(T.running||W.running||Pr.running){
+    lockScreen();                       // the lock is dropped while backgrounded
+    if(Pr.running&&S.speak.len*60-Math.round((Date.now()-Pr.t0)/1000)<=0){endSpeak();return;}
+    if(W.running&&W.len*60-Math.round((Date.now()-W.t0)/1000)<=0){finishWork();return;}
+    if(T.running&&T.len*60-Math.round((Date.now()-T.t0)/1000)<=0){finishTimer();return;}
+    render(); return;
+  }
+  if(!sheet) render();
 });
 
 /* ---------- boot ---------- */
@@ -559,7 +855,12 @@ store.get().then(function(raw){
       S.med=v.med&&typeof v.med==='object'?v.med:{total:0,len:10,days:{}};
       if(typeof S.med.total!=='number') S.med.total=0;
       if(!S.med.days) S.med.days={};
-      T.len=S.med.len||10;
+      S.work=v.work&&typeof v.work==='object'?v.work:{total:0,len:50,days:{},clean:0};
+      if(typeof S.work.total!=='number') S.work.total=0;
+      if(!S.work.days) S.work.days={};
+      if(typeof S.work.clean!=='number') S.work.clean=0;
+      if(!S.work.tags) S.work.tags={en:0,ja:0,other:0};
+      T.len=S.med.len||10; W.len=S.work.len||50; W.tag=S.work.tag||'en';
     }catch(e){}
   }
   render();
