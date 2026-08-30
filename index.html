@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>දින චර්යා</title>
+
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#131A24">
+<meta name="description" content="දිනපතා පුරුදු, භාවනාව සහ ඉතිරි කිරීම් සටහන් තබාගන්නා ඇප් එකක්.">
+
+<link rel="icon" href="./icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="./icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="දින චර්යා">
+
+<style>
+:root{
+  --night:#131A24; --raised:#1B2430; --thread:#2E3A48;
+  --lamp:#E8B54A; --jade:#7FB6A1; --paper:#E6E3DB; --muted:#8A96A3;
+  --serif:'Noto Serif Sinhala','Iskoola Pota','Nirmala UI',Georgia,serif;
+  --sans:'Noto Sans Sinhala','Iskoola Pota','Nirmala UI',system-ui,-apple-system,sans-serif;
+  --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--night)}
+body{
+  overscroll-behavior-y:contain;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-font-smoothing:antialiased;
+}
+
+#dc{
+  font-family:var(--sans);color:var(--paper);
+  background:radial-gradient(120% 60% at 50% 0%,#1F2B3A 0%,transparent 55%),var(--night);
+  min-height:100%;max-width:520px;margin:0 auto;line-height:1.55;
+  padding:calc(env(safe-area-inset-top,0px) + 24px)
+          calc(env(safe-area-inset-right,0px) + 18px)
+          calc(env(safe-area-inset-bottom,0px) + 40px)
+          calc(env(safe-area-inset-left,0px) + 18px);
+}
+
+/* header */
+#dc .top{display:flex;align-items:flex-start;gap:14px}
+#dc .moonwrap{flex:0 0 auto;padding-top:3px}
+#dc .datebox{flex:1 1 auto;min-width:0}
+#dc .dayname{font-family:var(--serif);font-weight:600;font-size:23px;letter-spacing:.2px;line-height:1.3}
+#dc .datesub{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.6px;margin-top:2px}
+#dc .lunar{display:inline-block;margin-top:7px;font-size:12px;color:var(--lamp);
+  border:1px solid rgba(232,181,74,.28);border-radius:100px;padding:2px 10px}
+#dc .lunar.poya{background:rgba(232,181,74,.12);font-weight:600}
+#dc .tally{flex:0 0 auto;text-align:right}
+#dc .tally b{font-family:var(--mono);font-size:26px;font-weight:500;color:var(--lamp)}
+#dc .tally span{font-family:var(--mono);font-size:14px;color:var(--muted)}
+#dc .tally small{display:block;font-size:11px;color:var(--muted);margin-top:1px}
+
+#dc .stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
+#dc .stat{border:1px solid var(--thread);border-radius:10px;padding:11px 13px;background:var(--raised)}
+#dc .stat b{display:block;font-family:var(--mono);font-size:19px;font-weight:500;line-height:1.3}
+#dc .stat.s1 b{color:var(--jade)} #dc .stat.s2 b{color:var(--lamp)}
+#dc .stat span{font-size:11.5px;color:var(--muted)}
+
+#dc .sec{margin-top:30px}
+#dc .sechead{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+#dc h2{font-family:var(--serif);font-size:16px;font-weight:600;letter-spacing:.3px}
+#dc .hint{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.55}
+
+/* thread */
+#dc .part{display:flex;align-items:center;gap:10px;margin:20px 0 8px;padding-left:2px}
+#dc .part:first-of-type{margin-top:14px}
+#dc .part em{font-style:normal;font-family:var(--serif);font-size:12px;letter-spacing:1.6px;color:var(--muted)}
+#dc .part i{flex:1;height:1px;background:var(--thread)}
+#dc .knot{display:grid;grid-template-columns:44px 26px 1fr auto;align-items:start;
+  width:100%;text-align:left;padding:10px 0;cursor:pointer;position:relative;
+  user-select:none;-webkit-user-select:none}
+#dc .knot.locked{cursor:default}
+#dc .kt{font-family:var(--mono);font-size:11.5px;color:var(--muted);padding-top:3px;letter-spacing:.3px}
+#dc .kb{position:relative;height:100%;display:flex;justify-content:center}
+#dc .kb .line{position:absolute;top:0;bottom:-20px;width:2px;background:var(--thread);transition:background .4s ease}
+#dc .knot:last-of-type .kb .line{display:none}
+#dc .knot.done .kb .line{background:rgba(232,181,74,.45)}
+#dc .kb .bead{position:relative;z-index:2;margin-top:4px;width:12px;height:12px;border-radius:50%;
+  background:var(--night);border:2px solid var(--thread);transition:all .25s ease}
+#dc .knot.anchor .kb .bead{width:16px;height:16px;margin-top:2px;border-color:var(--muted)}
+#dc .knot.done .kb .bead{background:var(--lamp);border-color:var(--lamp);box-shadow:0 0 0 4px rgba(232,181,74,.14)}
+#dc .kx{padding-left:12px;padding-right:8px}
+#dc .kx .title{display:block;font-size:14.5px;line-height:1.45;transition:color .2s}
+#dc .knot.done .kx .title{color:var(--muted)}
+#dc .kx .note{display:block;font-size:11.5px;color:var(--muted);margin-top:2px;opacity:.85}
+#dc .knot.off{opacity:.32}
+#dc .mini{background:none;border:1px solid rgba(232,181,74,.4);color:var(--lamp);border-radius:7px;
+  padding:6px 12px;font-family:var(--sans);font-size:12px;cursor:pointer;white-space:nowrap}
+#dc .sw{width:38px;height:22px;border-radius:100px;border:1px solid var(--thread);background:var(--night);
+  cursor:pointer;padding:0;position:relative;margin-top:2px;transition:all .2s;flex:0 0 auto}
+#dc .sw::after{content:'';position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;
+  background:var(--muted);transition:all .2s}
+#dc .sw[aria-checked="true"]{background:rgba(127,182,161,.2);border-color:var(--jade)}
+#dc .sw[aria-checked="true"]::after{left:19px;background:var(--jade)}
+
+/* week */
+#dc .week{display:flex;gap:6px;margin-top:14px}
+#dc .wd{flex:1;text-align:center}
+#dc .wd .ring{width:100%;aspect-ratio:1;max-width:42px;margin:0 auto 6px;border-radius:50%;
+  border:1.5px solid var(--thread);display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;color:var(--muted);position:relative;overflow:hidden}
+#dc .wd .fill{position:absolute;left:0;right:0;bottom:0;background:rgba(232,181,74,.3)}
+#dc .wd .num{position:relative;z-index:2}
+#dc .wd.today .ring{border-color:var(--lamp);color:var(--paper)}
+#dc .wd em{font-style:normal;font-size:10.5px;color:var(--muted)}
+
+/* ledger */
+#dc .goalrow{display:flex;align-items:baseline;justify-content:space-between;margin-top:14px;gap:10px}
+#dc .big{font-family:var(--mono);font-size:27px;font-weight:500;color:var(--jade);letter-spacing:-.5px}
+#dc .goalof{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+#dc .bar{height:6px;border-radius:100px;background:var(--thread);margin-top:11px;overflow:hidden}
+#dc .bar i{display:block;height:100%;background:var(--jade);border-radius:100px;transition:width .5s ease}
+#dc .barmeta{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:7px}
+#dc .addrow{display:flex;gap:8px;margin-top:16px}
+#dc input{flex:1;min-width:0;background:var(--night);border:1px solid var(--thread);border-radius:8px;
+  padding:11px 12px;color:var(--paper);font-family:var(--mono);font-size:16px}
+#dc input:focus{outline:2px solid var(--jade);outline-offset:1px;border-color:transparent}
+#dc button.act{background:var(--jade);color:#0F1A16;border:0;border-radius:8px;padding:11px 16px;
+  font-family:var(--sans);font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+#dc button.ghost{background:none;border:1px solid var(--thread);color:var(--muted);border-radius:7px;
+  padding:6px 11px;font-family:var(--sans);font-size:12px;cursor:pointer}
+#dc .entries{margin-top:18px;border-top:1px solid var(--thread)}
+#dc .ent{display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:10px 0;border-bottom:1px solid rgba(46,58,72,.55)}
+#dc .ent .d{font-family:var(--mono);font-size:12px;color:var(--muted)}
+#dc .ent .a{font-family:var(--mono);font-size:14px}
+#dc .ent button{background:none;border:0;color:var(--thread);cursor:pointer;font-size:18px;padding:0 4px;line-height:1}
+#dc .empty{font-size:12.5px;color:var(--muted);padding:14px 0;line-height:1.6}
+
+#dc .foot{margin-top:32px;padding-top:16px;border-top:1px solid var(--thread)}
+#dc .foot p{font-size:11px;color:var(--muted);line-height:1.65}
+#dc .footbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+#dc .ver{font-family:var(--mono);font-size:10.5px;color:var(--thread);margin-top:14px;letter-spacing:.5px}
+#dc .load{text-align:center;color:var(--muted);font-size:13px;padding:60px 0}
+
+/* overlays */
+#dc .veil{position:fixed;inset:0;z-index:60;background:#0D131B;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:26px}
+#dc .veil .who{font-family:var(--serif);font-size:15px;color:var(--muted);letter-spacing:2px;margin-bottom:34px}
+#dc .dial{position:relative;width:224px;height:224px;max-width:64vw;max-height:64vw}
+#dc .dial svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+#dc .dial .rem{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+#dc .dial .rem b{font-family:var(--mono);font-size:38px;font-weight:400;letter-spacing:-1px}
+#dc .dial .rem span{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:1.5px}
+#dc .picks{display:flex;gap:7px;margin-top:36px;flex-wrap:wrap;justify-content:center}
+#dc .pick{background:none;border:1px solid var(--thread);color:var(--muted);border-radius:100px;
+  padding:8px 16px;font-family:var(--mono);font-size:13px;cursor:pointer;transition:all .2s}
+#dc .pick.on{border-color:var(--lamp);color:var(--lamp);background:rgba(232,181,74,.1)}
+#dc .vbtns{display:flex;gap:10px;margin-top:30px}
+#dc .vbtn{background:var(--lamp);color:#1A1206;border:0;border-radius:100px;padding:13px 30px;
+  font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer}
+#dc .vbtn.sub{background:none;border:1px solid var(--thread);color:var(--muted);font-weight:400}
+#dc .vnote{font-size:12px;color:var(--muted);margin-top:26px;text-align:center;max-width:290px;line-height:1.65}
+
+#dc .sheet{position:fixed;inset:0;z-index:70;background:rgba(9,13,19,.9);display:flex;
+  align-items:flex-end;justify-content:center;padding:0}
+#dc .sheetin{background:var(--raised);border:1px solid var(--thread);border-radius:16px 16px 0 0;
+  width:100%;max-width:520px;padding:22px 18px calc(env(safe-area-inset-bottom,0px) + 22px);
+  max-height:88vh;overflow:auto}
+#dc .sheetin h3{font-family:var(--serif);font-size:16px;font-weight:600;margin-bottom:8px}
+#dc textarea{width:100%;height:130px;background:var(--night);border:1px solid var(--thread);
+  border-radius:8px;padding:11px;color:var(--paper);font-family:var(--mono);font-size:12px;
+  margin-top:12px;resize:vertical}
+#dc textarea:focus{outline:2px solid var(--jade);outline-offset:1px}
+#dc .msg{font-size:12px;color:var(--jade);margin-top:10px}
+#dc .msg.bad{color:#E0A79F}
+
+*:focus-visible{outline:2px solid var(--lamp);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){#dc *{transition:none!important}}
+@media (max-width:400px){
+  #dc .knot{grid-template-columns:40px 24px 1fr auto}
+  #dc .dayname{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div id="dc"><div class="load">පූරණය වෙමින්…</div></div>
+
+<script>
+(function(){
+"use strict";
+var VER='2.0', KEY='dinacharya:v1', root=document.getElementById('dc');
+
+var DAYS=['ඉරිදා','සඳුදා','අඟහරුවාදා','බදාදා','බ්‍රහස්පතින්දා','සිකුරාදා','සෙනසුරාදා'];
+var DAYS_S=['ඉරි','සඳු','අඟ','බදා','බ්‍රහ','සිකු','සෙන'];
+var MONTHS=['ජනවාරි','පෙබරවාරි','මාර්තු','අප්‍රේල්','මැයි','ජූනි','ජූලි','අගෝස්තු','සැප්තැම්බර්','ඔක්තෝබර්','නොවැම්බර්','දෙසැම්බර්'];
+
+var DEFAULTS=[
+  {id:'wake',   t:'05:30',p:'උදෑසන',title:'නියමිත වේලාවට නැගිටීම',note:'හැමදාම එකම වෙලාව — සති අන්තයේත්',anchor:true},
+  {id:'nophone',t:'05:35',p:'උදෑසන',title:'නැගිට පළමු පැය ෆෝන් එක නෑ',note:'ඇලාම් එක විතරයි'},
+  {id:'medit',  t:'05:45',p:'උදෑසන',title:'භාවනාව',note:'මුලින්ම විනාඩි 10යි. ඒක ඇති.',anchor:true,med:true},
+  {id:'move',   t:'06:15',p:'උදෑසන',title:'ඇවිදීම හෝ ව්‍යායාම',note:'විනාඩි 20–30'},
+  {id:'mit',    t:'09:00',p:'දහවල', title:'දවසේ වැදගත්ම වැඩේ මුලින්ම',note:'එකයි — ලැයිස්තුවක් නෙවෙයි'},
+  {id:'learn',  t:'19:00',p:'සවස',  title:'විනාඩි 20ක් කියවීම හෝ ඉගෙනීම'},
+  {id:'dhamma', t:'19:30',p:'සවස',  title:'දහම් ශ්‍රවණය හෝ කියවීම'},
+  {id:'spend',  t:'20:30',p:'සවස',  title:'අද වියදම් සටහන් කිරීම',note:'විනාඩියයි යන්නේ'},
+  {id:'offline',t:'21:00',p:'රාත්‍රී',title:'නින්දට පැයකට කලින් ෆෝන් එක පැත්තකට'},
+  {id:'journal',t:'21:30',p:'රාත්‍රී',title:'දිනපොත — අද හොඳ දෙයක් එකක්'},
+  {id:'sleep',  t:'22:00',p:'රාත්‍රී',title:'නියමිත වේලාවට නින්ද',anchor:true}
+];
+
+var FRESH={off:{},log:{},goal:25000,entries:[],med:{total:0,len:10,days:{}}};
+var S=JSON.parse(JSON.stringify(FRESH));
+var editing=false, actx=null, installEvt=null, sheet=null, sheetText='', msg=null;
+var T={open:false,len:10,left:0,running:false,tick:null,t0:0};
+
+/* ---------- storage: Claude preview -> localStorage -> memory ---------- */
+var mem=null;
+var store={
+  get:function(){
+    if(window.storage&&window.storage.get){
+      try{ return window.storage.get(KEY)
+        .then(function(r){return r&&r.value?r.value:null;})
+        .catch(function(){return null;}); }catch(e){}
+    }
+    try{ return Promise.resolve(localStorage.getItem(KEY)); }catch(e){}
+    return Promise.resolve(mem);
+  },
+  set:function(v){
+    if(window.storage&&window.storage.set){
+      try{ window.storage.set(KEY,v); return true; }catch(e){}
+    }
+    try{ localStorage.setItem(KEY,v); return true; }catch(e){}
+    mem=v; return false;
+  }
+};
+function save(){ store.set(JSON.stringify(S)); }
+
+/* ---------- helpers ---------- */
+function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function money(n){return Math.round(n).toLocaleString('en-US');}
+function active(){return DEFAULTS.filter(function(h){return !S.off[h.id];});}
+function doneOn(k){return (S.log[k]||[]).length;}
+function esc(s){return String(s).replace(/[&<>"]/g,function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m];});}
+function mmss(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+function hoursText(m){
+  m=Math.round(m||0);
+  if(m<60) return 'විනාඩි '+m;
+  var h=Math.floor(m/60), r=m%60;
+  return 'පැය '+h+(r?' විනාඩි '+r:'');
+}
+function moonPhase(d){var s=29.530588853,k=Date.UTC(2000,0,6,18,14);
+  var p=(((d.getTime()-k)/86400000)%s)/s;return p<0?p+1:p;}
+function moonName(p){
+  if(p<.021||p>.979)return{n:'අමාවක',poya:false};
+  if(Math.abs(p-.25)<.021)return{n:'පුර අටවක',poya:false};
+  if(Math.abs(p-.5)<.021)return{n:'පසළොස්වක පොහොය',poya:true};
+  if(Math.abs(p-.75)<.021)return{n:'අව අටවක',poya:false};
+  return{n:p<.5?'පුර පක්ෂය':'අව පක්ෂය',poya:false};}
+function moonSVG(p){
+  var r=13,c=16,t=p*2*Math.PI,rx=Math.abs(Math.cos(t))*r;
+  var so=p<.5?1:0,si=Math.cos(t)>0?so:1-so;
+  return '<svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">'+
+    '<circle cx="16" cy="16" r="13" fill="#1B2430" stroke="#2E3A48"/>'+
+    '<path d="M '+c+' '+(c-r)+' A '+r+' '+r+' 0 0 '+so+' '+c+' '+(c+r)+
+    ' A '+rx+' '+r+' 0 0 '+si+' '+c+' '+(c-r)+' Z" fill="#E8B54A" opacity=".9"/></svg>';}
+function streak(){
+  var need=Math.max(1,Math.ceil(active().length/2)),n=0,d=new Date();
+  if(doneOn(ymd(d))<need) d.setDate(d.getDate()-1);
+  for(var i=0;i<500;i++){
+    if(doneOn(ymd(d))>=need){n++;d.setDate(d.getDate()-1);} else break;
+  }
+  return n;
+}
+function bell(){
+  try{
+    actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+    if(actx.state==='suspended') actx.resume();
+    var t=actx.currentTime;
+    [[196,.34],[392,.18],[588,.09],[784,.045]].forEach(function(p,i){
+      var o=actx.createOscillator(),g=actx.createGain();
+      o.type='sine';o.frequency.value=p[0];
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(p[1],t+.012);
+      g.gain.exponentialRampToValueAtTime(.0001,t+5-i*.6);
+      o.connect(g);g.connect(actx.destination);o.start(t);o.stop(t+5.2);
+    });
+  }catch(e){}
+}
+
+/* ---------- meditation ---------- */
+function startTimer(){
+  bell();
+  T.left=T.len*60; T.running=true; T.t0=Date.now();
+  if(T.tick) clearInterval(T.tick);
+  T.tick=setInterval(function(){
+    T.left=Math.max(0,T.len*60-Math.round((Date.now()-T.t0)/1000));
+    if(T.left<=0) finishTimer(); else render();
+  },1000);
+  render();
+}
+function finishTimer(){
+  clearInterval(T.tick); T.tick=null; T.running=false; bell();
+  var k=ymd(new Date());
+  S.med.total+=T.len; S.med.len=T.len;
+  S.med.days[k]=(S.med.days[k]||0)+T.len;
+  var a=S.log[k]||(S.log[k]=[]);
+  if(a.indexOf('medit')<0) a.push('medit');
+  T.open=false; T.left=0; save(); render();
+}
+function stopTimer(){
+  clearInterval(T.tick); T.tick=null;
+  var d=Math.floor((T.len*60-T.left)/60);
+  T.running=false; T.left=0;
+  if(d>=1){ var k=ymd(new Date()); S.med.total+=d; S.med.days[k]=(S.med.days[k]||0)+d; save(); }
+  T.open=false; render();
+}
+function veil(){
+  var total=T.len*60, left=T.running?T.left:total;
+  var frac=total?(total-left)/total:0, R=104, C=2*Math.PI*R;
+  var h='<div class="veil"><div class="who">භාවනාව</div><div class="dial">'+
+    '<svg viewBox="0 0 224 224">'+
+    '<circle cx="112" cy="112" r="'+R+'" fill="none" stroke="#2E3A48" stroke-width="2"/>'+
+    '<circle cx="112" cy="112" r="'+R+'" fill="none" stroke="#E8B54A" stroke-width="2" stroke-linecap="round"'+
+    ' stroke-dasharray="'+C+'" stroke-dashoffset="'+(C*(1-frac))+'" opacity=".85"/></svg>'+
+    '<div class="rem"><b>'+mmss(left)+'</b><span>'+(T.running?'':'විනාඩි '+T.len)+'</span></div></div>';
+  if(!T.running){
+    h+='<div class="picks">';
+    [5,10,15,20,30,45].forEach(function(m){
+      h+='<button class="pick'+(m===T.len?' on':'')+'" data-len="'+m+'">'+m+'</button>';});
+    h+='</div>';
+  }
+  h+='<div class="vbtns">';
+  h+=T.running?'<button class="vbtn sub" data-stop>නවත්වන්න</button>'
+    :'<button class="vbtn" data-start>පටන් ගන්න</button><button class="vbtn sub" data-close>වහන්න</button>';
+  h+='</div>';
+  if(!T.running) h+='<div class="vnote">සති දෙකක් එකම කාලය තියාගන්න. පුරුදු වුණාට පස්සේ විනාඩි 5ක් වැඩි කරන්න — එකපාරට නෙවෙයි.</div>';
+  return h+'</div>';
+}
+
+/* ---------- backup sheet ---------- */
+function sheetHTML(){
+  var isOut=sheet==='out';
+  var h='<div class="sheet"><div class="sheetin">'+
+    '<h3>'+(isOut?'දත්ත උපස්ථ කිරීම':'උපස්ථයෙන් ආපහු ගැනීම')+'</h3>'+
+    '<p class="hint">'+(isOut
+      ? 'මේ පෙළ පිටපත් කරලා ආරක්ෂිත තැනක තියාගන්න. ෆෝන් එක වෙනස් කරාම හෝ browser data මැකුණාම මේකෙන් ආපහු ගන්න පුළුවන්.'
+      : 'කලින් උපස්ථ කරපු පෙළ මෙතන අලවලා බොත්තම එබන්න. දැන් තියෙන දත්ත මැකෙනවා.')+'</p>'+
+    '<textarea id="bk" spellcheck="false" placeholder="'+(isOut?'':'උපස්ථ පෙළ මෙතන අලවන්න')+'">'+
+      esc(isOut?JSON.stringify(S):sheetText)+'</textarea>';
+  if(msg) h+='<div class="msg'+(msg.bad?' bad':'')+'">'+esc(msg.t)+'</div>';
+  h+='<div class="footbtns">'+
+    (isOut?'<button class="act" data-copy>පිටපත් කරන්න</button>'
+          :'<button class="act" data-restore>ආපහු ගන්න</button>')+
+    '<button class="ghost" data-sheetclose>වහන්න</button></div></div></div>';
+  return h;
+}
+
+/* ---------- render ---------- */
+function render(){
+  var now=new Date(), today=ymd(now);
+  var acts=active(), done=S.log[today]||[];
+  var ph=moonPhase(now), mn=moonName(ph), h='';
+
+  h+='<div class="top"><div class="moonwrap">'+moonSVG(ph)+'</div>'+
+    '<div class="datebox"><div class="dayname">'+DAYS[now.getDay()]+'</div>'+
+    '<div class="datesub">'+now.getDate()+' '+MONTHS[now.getMonth()]+' '+now.getFullYear()+'</div>'+
+    '<div class="lunar'+(mn.poya?' poya':'')+'">'+mn.n+'</div></div>'+
+    '<div class="tally"><b>'+done.length+'</b><span>/'+acts.length+'</span><small>අද</small></div></div>';
+
+  var st=streak();
+  h+='<div class="stats"><div class="stat s1"><b>'+st+'</b><span>'+
+    (st?'දිනක් අඛණ්ඩව':'අද පටන් ගමු')+'</span></div>'+
+    '<div class="stat s2"><b>'+hoursText(S.med.total)+'</b><span>මුළු භාවනා කාලය</span></div></div>';
+
+  h+='<div class="sec"><div class="sechead"><h2>දවසේ නූල</h2>'+
+    '<button class="ghost" data-edit>'+(editing?'ඉවරයි':'පුරුදු තෝරන්න')+'</button></div>'+
+    '<div class="hint">'+(editing
+      ?'ඔයාට දැන් ඕන නැති පුරුදු ක්‍රියාවිරහිත කරන්න. පස්සේ ඕන වෙලාවක ආපහු දාන්න පුළුවන්.'
+      :'ලොකු ○ තියෙන තුන තමයි නැංගුරම්. මුල් සති දෙකේ ඒ තුනට විතරක් අවධානය දෙන්න.')+'</div>';
+
+  var list=editing?DEFAULTS:acts, lastPart='';
+  if(!list.length) h+='<div class="empty">සක්‍රීය පුරුදු නෑ. "පුරුදු තෝරන්න" එබලා කීපයක් ආපහු දාන්න.</div>';
+  list.forEach(function(x){
+    if(x.p!==lastPart){h+='<div class="part"><em>'+x.p+'</em><i></i></div>';lastPart=x.p;}
+    var isDone=done.indexOf(x.id)>-1, isOff=!!S.off[x.id];
+    h+='<div class="knot'+(isDone&&!isOff?' done':'')+(x.anchor?' anchor':'')+
+      (isOff?' off':'')+(editing?' locked':'')+'" data-h="'+x.id+'"'+
+      (editing?'':' role="button" tabindex="0" aria-pressed="'+isDone+'"')+'>'+
+      '<span class="kt">'+x.t+'</span>'+
+      '<span class="kb"><span class="line"></span><span class="bead"></span></span>'+
+      '<span class="kx"><span class="title">'+esc(x.title)+'</span>'+
+      (x.note?'<span class="note">'+esc(x.note)+'</span>':'')+'</span>';
+    h+= editing ? '<button class="sw" data-off="'+x.id+'" role="switch" aria-checked="'+(!isOff)+'" aria-label="'+esc(x.title)+'"></button>'
+       : (x.med ? '<button class="mini" data-med>ටයිමරය</button>' : '<span></span>');
+    h+='</div>';
+  });
+  h+='</div>';
+
+  h+='<div class="sec"><h2>ගිය දින හත</h2><div class="week">';
+  for(var i=6;i>=0;i--){
+    var d=new Date(); d.setDate(d.getDate()-i);
+    var k=ymd(d), c=doneOn(k), pc=acts.length?Math.min(100,Math.round(c/acts.length*100)):0;
+    h+='<div class="wd'+(i===0?' today':'')+'"><div class="ring">'+
+      '<span class="fill" style="height:'+pc+'%"></span><span class="num">'+c+'</span></div>'+
+      '<em>'+DAYS_S[d.getDay()]+'</em></div>';
+  }
+  h+='</div></div>';
+
+  var mk=today.slice(0,7);
+  var mSum=S.entries.filter(function(e){return e.d.slice(0,7)===mk;}).reduce(function(a,e){return a+e.a;},0);
+  var all=S.entries.reduce(function(a,e){return a+e.a;},0);
+  var pc2=S.goal>0?Math.min(100,mSum/S.goal*100):0;
+
+  h+='<div class="sec"><div class="sechead"><h2>ඉතිරි කිරීමේ පොත</h2>'+
+    '<button class="ghost" data-goal>ඉලක්කය: '+money(S.goal)+'</button></div>'+
+    '<div class="hint">වැටුප ආපු ගමන් මුලින්ම ඉතිරි කරන්න — ඉතුරු වුණාම නෙවෙයි.</div>'+
+    '<div class="goalrow"><span class="big">Rs '+money(mSum)+'</span>'+
+    '<span class="goalof">/ '+money(S.goal)+'</span></div>'+
+    '<div class="bar"><i style="width:'+pc2+'%"></i></div>'+
+    '<div class="barmeta"><span>'+MONTHS[now.getMonth()]+' මාසය</span>'+
+    '<span>මුළු එකතුව  Rs '+money(all)+'</span></div>'+
+    '<div class="addrow"><input id="amt" type="number" inputmode="numeric" placeholder="මුදල (Rs)" min="1">'+
+    '<button class="act" data-add>එකතු කරන්න</button></div>';
+  if(!S.entries.length) h+='<div class="empty">තවම සටහන් නෑ. පොඩි මුදලක් වුණත් අද දාන්න — පොත පටන් ගන්න එක තමයි වැදගත්ම දේ.</div>';
+  else{
+    h+='<div class="entries">';
+    S.entries.slice().reverse().slice(0,8).forEach(function(e){
+      var dd=e.d.split('-');
+      h+='<div class="ent"><span class="d">'+parseInt(dd[2],10)+' '+MONTHS[parseInt(dd[1],10)-1]+'</span>'+
+        '<span style="display:flex;align-items:center;gap:12px"><span class="a">Rs '+money(e.a)+'</span>'+
+        '<button data-del="'+e.id+'" aria-label="මකන්න">×</button></span></div>';
+    });
+    h+='</div>';
+  }
+  h+='</div>';
+
+  h+='<div class="foot"><p>දත්ත මේ ෆෝන් එකේ විතරයි තියෙන්නේ — කොහෙටවත් යවන්නේ නෑ. '+
+    'මේක ඉතිරි කිරීම් සටහන් තියාගන්න පොතක් විතරයි, මූල්‍ය උපදෙස් දෙන එකක් නෙවෙයි.</p><div class="footbtns">'+
+    (installEvt?'<button class="ghost" data-install>ෆෝන් එකට එකතු කරන්න</button>':'')+
+    '<button class="ghost" data-out>උපස්ථ කරන්න</button>'+
+    '<button class="ghost" data-in>ආපහු ගන්න</button>'+
+    '<button class="ghost" data-reset>සියල්ල මකන්න</button></div>'+
+    '<div class="ver">දින චර්යා '+VER+' · offline</div></div>';
+
+  if(T.open) h+=veil();
+  if(sheet) h+=sheetHTML();
+  root.innerHTML=h;
+}
+
+function toggleHabit(id){
+  var k=ymd(new Date()), a=S.log[k]||(S.log[k]=[]), i=a.indexOf(id);
+  if(i>-1) a.splice(i,1); else a.push(id);
+  if(!a.length) delete S.log[k];
+  save(); render();
+}
+
+/* ---------- events ---------- */
+root.addEventListener('click',function(ev){
+  var t=ev.target.closest('[data-len],[data-start],[data-stop],[data-close],[data-med],[data-off],'+
+    '[data-edit],[data-add],[data-del],[data-goal],[data-reset],[data-install],[data-out],[data-in],'+
+    '[data-copy],[data-restore],[data-sheetclose],[data-h]');
+  if(!t) return;
+
+  if(t.hasAttribute('data-len')){T.len=+t.getAttribute('data-len');T.left=T.len*60;render();}
+  else if(t.hasAttribute('data-start')) startTimer();
+  else if(t.hasAttribute('data-stop')) stopTimer();
+  else if(t.hasAttribute('data-close')){T.open=false;render();}
+  else if(t.hasAttribute('data-med')){T.open=true;T.left=T.len*60;render();}
+  else if(t.hasAttribute('data-off')){
+    var o=t.getAttribute('data-off');
+    if(S.off[o]) delete S.off[o]; else S.off[o]=1;
+    save();render();
+  }
+  else if(t.hasAttribute('data-edit')){editing=!editing;render();}
+  else if(t.hasAttribute('data-add')){
+    var el=root.querySelector('#amt'), v=parseFloat(el.value);
+    if(!v||v<=0){el.focus();return;}
+    S.entries.push({id:'e'+Date.now(),d:ymd(new Date()),a:v});
+    save();render();
+  }
+  else if(t.hasAttribute('data-del')){
+    var id=t.getAttribute('data-del');
+    S.entries=S.entries.filter(function(e){return e.id!==id;});
+    save();render();
+  }
+  else if(t.hasAttribute('data-goal')){
+    var g=parseFloat(prompt('මාසික ඉතිරි කිරීමේ ඉලක්කය (Rs):',S.goal));
+    if(g&&g>0){S.goal=g;save();render();}
+  }
+  else if(t.hasAttribute('data-reset')){
+    if(confirm('සියලු පුරුදු, භාවනා සහ ඉතිරි කිරීම් සටහන් මැකෙනවා. විශ්වාසද?')){
+      S=JSON.parse(JSON.stringify(FRESH));save();render();
+    }
+  }
+  else if(t.hasAttribute('data-install')){
+    if(installEvt){installEvt.prompt();installEvt=null;}
+  }
+  else if(t.hasAttribute('data-out')){sheet='out';msg=null;render();}
+  else if(t.hasAttribute('data-in')){sheet='in';sheetText='';msg=null;render();}
+  else if(t.hasAttribute('data-sheetclose')){sheet=null;msg=null;render();}
+  else if(t.hasAttribute('data-copy')){
+    var ta=root.querySelector('#bk');
+    ta.select();
+    var ok=false;
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(ta.value).then(function(){msg={t:'පිටපත් කළා.'};render();})
+        .catch(function(){msg={t:'පිටපත් කරන්න බැරි වුණා. පෙළ අතින් තෝරලා පිටපත් කරන්න.',bad:true};render();});
+      return;
+    }
+    try{ok=document.execCommand('copy');}catch(e){}
+    msg=ok?{t:'පිටපත් කළා.'}:{t:'පිටපත් කරන්න බැරි වුණා. පෙළ අතින් තෝරලා පිටපත් කරන්න.',bad:true};
+    render();
+  }
+  else if(t.hasAttribute('data-restore')){
+    var v=root.querySelector('#bk').value.trim();
+    try{
+      var o=JSON.parse(v);
+      if(!o||typeof o!=='object') throw 0;
+      S.off=o.off||{}; S.log=o.log||{};
+      S.goal=typeof o.goal==='number'?o.goal:25000;
+      S.entries=Array.isArray(o.entries)?o.entries:[];
+      S.med=o.med&&typeof o.med==='object'?o.med:{total:0,len:10,days:{}};
+      if(typeof S.med.total!=='number') S.med.total=0;
+      if(!S.med.days) S.med.days={};
+      T.len=S.med.len||10;
+      save(); sheet=null; msg=null; render();
+    }catch(e){ msg={t:'පෙළ හරි නෑ. උපස්ථය මුළුමනින්ම අලවලා තියෙනවද බලන්න.',bad:true}; render(); }
+  }
+  else if(t.hasAttribute('data-h')&&!editing) toggleHabit(t.getAttribute('data-h'));
+});
+
+root.addEventListener('input',function(ev){
+  if(ev.target.id==='bk') sheetText=ev.target.value;
+});
+root.addEventListener('keydown',function(ev){
+  if(ev.key==='Enter'&&ev.target.id==='amt'){
+    ev.preventDefault();
+    var b=root.querySelector('[data-add]'); if(b) b.click(); return;
+  }
+  var k=ev.target.closest('.knot[role="button"]');
+  if(k&&(ev.key==='Enter'||ev.key===' ')){ev.preventDefault();toggleHabit(k.getAttribute('data-h'));}
+});
+
+window.addEventListener('beforeinstallprompt',function(e){
+  e.preventDefault(); installEvt=e;
+  if(!root.querySelector('.load')) render();
+});
+
+/* redraw when the app comes back after midnight */
+document.addEventListener('visibilitychange',function(){
+  if(!document.hidden&&!T.running&&!sheet) render();
+});
+
+/* ---------- boot ---------- */
+store.get().then(function(raw){
+  if(raw){
+    try{
+      var v=JSON.parse(raw);
+      S.off=v.off||{}; S.log=v.log||{};
+      S.goal=typeof v.goal==='number'?v.goal:25000;
+      S.entries=Array.isArray(v.entries)?v.entries:[];
+      S.med=v.med&&typeof v.med==='object'?v.med:{total:0,len:10,days:{}};
+      if(typeof S.med.total!=='number') S.med.total=0;
+      if(!S.med.days) S.med.days={};
+      T.len=S.med.len||10;
+    }catch(e){}
+  }
+  render();
+}).catch(render);
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('./sw.js').catch(function(){});
+  });
+}
+})();
+</script>
+</body>
+</html>
