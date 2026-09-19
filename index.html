@@ -191,6 +191,37 @@ body{
   letter-spacing:.5px;margin-bottom:3px}
 #dc .pats span{font-family:var(--serif);font-size:14px;color:var(--jade);text-align:center;line-height:1.4}
 
+/* tasks */
+#dc .tlist{margin-top:12px;border-top:1px solid var(--thread)}
+#dc .trow{display:flex;align-items:flex-start;gap:11px;padding:11px 0;
+  border-bottom:1px solid rgba(46,58,72,.55)}
+#dc .tbox{flex:0 0 auto;width:17px;height:17px;margin-top:2px;border-radius:5px;
+  border:2px solid var(--thread);background:var(--night);cursor:pointer;padding:0;transition:all .2s}
+#dc .trow.done .tbox{background:var(--jade);border-color:var(--jade)}
+#dc .ttext{flex:1 1 auto;font-size:14px;line-height:1.45;min-width:0;word-break:break-word}
+#dc .trow.done .ttext{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--thread)}
+#dc .tmini{flex:0 0 auto;background:none;border:1px solid rgba(232,181,74,.35);color:var(--lamp);
+  border-radius:6px;padding:3px 8px;font-family:var(--mono);font-size:10.5px;cursor:pointer;white-space:nowrap}
+#dc .tdel{flex:0 0 auto;background:none;border:0;color:var(--thread);font-size:18px;
+  line-height:1;padding:0 3px;cursor:pointer}
+#dc .tdel:hover{color:#C4756B}
+
+/* planner */
+#dc .veil.pl{justify-content:flex-start;align-items:stretch;overflow-y:auto;
+  padding:calc(env(safe-area-inset-top,0px) + 20px) 16px calc(env(safe-area-inset-bottom,0px) + 28px)}
+#dc .plin{width:100%;max-width:520px;margin:0 auto}
+#dc .plhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px}
+#dc .days{display:flex;gap:7px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+#dc .day{flex:0 0 auto;width:48px;background:var(--raised);border:1px solid var(--thread);
+  border-radius:10px;padding:8px 0 6px;cursor:pointer;color:inherit;font:inherit;text-align:center}
+#dc .day em{display:block;font-style:normal;font-size:10px;color:var(--muted)}
+#dc .day b{display:block;font-family:var(--mono);font-size:17px;font-weight:500;margin-top:1px}
+#dc .day i{display:block;font-family:var(--mono);font-size:10px;font-style:normal;
+  color:var(--lamp);height:13px;line-height:13px}
+#dc .day i.z::after{content:'\u00b7';color:var(--thread)}
+#dc .day.on{border-color:var(--lamp);background:rgba(232,181,74,.08)}
+#dc .plday{font-family:var(--serif);font-size:17px;font-weight:600;margin-top:22px}
+
 #dc .sheet{position:fixed;inset:0;z-index:70;background:rgba(9,13,19,.9);display:flex;
   align-items:flex-end;justify-content:center;padding:0}
 #dc .sheetin{background:var(--raised);border:1px solid var(--thread);border-radius:16px 16px 0 0;
@@ -218,7 +249,7 @@ body{
 <script>
 (function(){
 "use strict";
-var VER='3.2', KEY='dinacharya:v1', root=document.getElementById('dc');
+var VER='3.3', KEY='dinacharya:v1', root=document.getElementById('dc');
 
 var DAYS=['ඉරිදා','සඳුදා','අඟහරුවාදා','බදාදා','බ්‍රහස්පතින්දා','සිකුරාදා','සෙනසුරාදා'];
 var DAYS_S=['ඉරි','සඳු','අඟ','බදා','බ්‍රහ','සිකු','සෙන'];
@@ -241,19 +272,22 @@ var DEFAULTS=[
   {id:'spend',  t:'20:30',p:'සවස',  title:'අද වියදම් සටහන් කිරීම',note:'විනාඩියයි යන්නේ'},
   {id:'offline',t:'21:00',p:'රාත්‍රී',title:'නින්දට පැයකට කලින් ෆෝන් එක පැත්තකට'},
   {id:'journal',t:'21:30',p:'රාත්‍රී',title:'දිනපොත — අද හොඳ දෙයක් එකක්'},
+  {id:'plan',   t:'21:40',p:'රාත්‍රී',title:'හෙට දවස සැලසුම් කිරීම',note:'උදේ තීරණය කරන්න ගියොත් ඒකෙන්ම විනාඩි 20ක් යනවා'},
   {id:'sleep',  t:'22:00',p:'රාත්‍රී',title:'නියමිත වේලාවට නින්ද',anchor:true}
 ];
 
 var FRESH={off:{},log:{},goal:25000,entries:[],
   med:{total:0,len:10,days:{}},
   work:{total:0,len:50,days:{},clean:0,tags:{en:0,ja:0,other:0}},
-  speak:{level:1,done:{},again:[],count:0,mins:0,len:3,cur:null,pats:[]}};
+  speak:{level:1,done:{},again:[],count:0,mins:0,len:3,cur:null,pats:[]},
+  tasks:[]};
 var S=JSON.parse(JSON.stringify(FRESH));
 var editing=false, actx=null, installEvt=null, sheet=null, sheetText='', msg=null;
 var T={open:false,len:10,left:0,running:false,tick:null,t0:0};
 var W={open:false,len:50,left:0,running:false,tick:null,t0:0,breaks:0,tag:'en'};
 var TAGS=[['en','ඉංග්‍රීසි'],['ja','ජපන්'],['other','වෙනත්']];
 var Pr={open:false,left:0,running:false,tick:null,t0:0,rate:false};
+var Pl={open:false,day:null}, taskText='';
 
 /* keep the screen awake while a timer runs, otherwise the phone locks
    and the closing bell never rings */
@@ -398,6 +432,75 @@ function veil(){
   h+='</div>';
   if(!T.running) h+='<div class="vnote">සති දෙකක් එකම කාලය තියාගන්න. පුරුදු වුණාට පස්සේ විනාඩි 5ක් වැඩි කරන්න — එකපාරට නෙවෙයි.</div>';
   return h+'</div>';
+}
+
+/* ---------- planned tasks ---------- */
+function tasksOn(k){ return S.tasks.filter(function(x){return x.d===k;}); }
+function overdue(){
+  var t=ymd(new Date());
+  return S.tasks.filter(function(x){return !x.done&&x.d<t;})
+                .sort(function(a,b){return a.d<b.d?-1:1;});
+}
+function aheadCount(){
+  var t=ymd(new Date());
+  return S.tasks.filter(function(x){return !x.done&&x.d>t;}).length;
+}
+function addTask(day,text){
+  text=(text||'').trim();
+  if(!text) return false;
+  S.tasks.push({id:'k'+Date.now()+Math.floor(Math.random()*1000),d:day,t:text.slice(0,160),done:false});
+  save(); return true;
+}
+function moveTask(id,day){
+  for(var i=0;i<S.tasks.length;i++) if(S.tasks[i].id===id){ S.tasks[i].d=day; break; }
+  save();
+}
+function toggleTask(id){
+  for(var i=0;i<S.tasks.length;i++) if(S.tasks[i].id===id){ S.tasks[i].done=!S.tasks[i].done; break; }
+  save();
+}
+function dropTask(id){ S.tasks=S.tasks.filter(function(x){return x.id!==id;}); save(); }
+/* keep the list from growing forever */
+function pruneTasks(){
+  var cut=new Date(); cut.setDate(cut.getDate()-30); cut=ymd(cut);
+  var before=S.tasks.length;
+  S.tasks=S.tasks.filter(function(x){return !(x.done&&x.d<cut);});
+  if(S.tasks.length!==before) save();
+}
+function dayLabel(k){
+  var pp=k.split('-'), d=new Date(+pp[0],+pp[1]-1,+pp[2]);
+  return d.getDate()+' '+MONTHS[d.getMonth()];
+}
+
+function taskRow(x,ctx){
+  var h='<div class="trow'+(x.done?' done':'')+'">'+
+    '<button class="tbox" data-tt="'+x.id+'" aria-pressed="'+x.done+'" aria-label="'+esc(x.t)+'"></button>'+
+    '<span class="ttext">'+esc(x.t)+'</span>';
+  if(ctx==='late') h+='<button class="tmini" data-ttoday="'+x.id+'">'+dayLabel(x.d)+' \u2192 අද</button>';
+  if(ctx==='plan') h+='<button class="tdel" data-tdel="'+x.id+'" aria-label="මකන්න">\u00d7</button>';
+  return h+'</div>';
+}
+
+function plannerVeil(){
+  var today=ymd(new Date()), day=Pl.day||today;
+  var h='<div class="veil pl"><div class="plin">'+
+    '<div class="plhead"><div class="who" style="margin:0">වැඩ සැලසුම</div>'+
+    '<button class="ghost" data-plclose>වහන්න</button></div><div class="days">';
+  for(var i=0;i<14;i++){
+    var d=new Date(); d.setDate(d.getDate()+i);
+    var k=ymd(d), n=tasksOn(k).filter(function(x){return !x.done;}).length;
+    h+='<button class="day'+(k===day?' on':'')+'" data-day="'+k+'">'+
+       '<em>'+DAYS_S[d.getDay()]+'</em><b>'+d.getDate()+'</b>'+
+       '<i'+(n?'':' class="z"')+'>'+(n||'')+'</i></button>';
+  }
+  h+='</div>';
+  var list=tasksOn(day);
+  h+='<div class="plday">'+(day===today?'අද':dayLabel(day))+'</div>';
+  if(!list.length) h+='<div class="empty">මේ දවසට වැඩ දාලා නෑ.</div>';
+  else h+='<div class="tlist">'+list.map(function(x){return taskRow(x,'plan');}).join('')+'</div>';
+  h+='<div class="addrow"><input id="tin" type="text" maxlength="160" placeholder="වැඩක් ලියන්න" value="'+esc(taskText)+'">'+
+     '<button class="act" data-tadd="'+day+'">එකතු</button></div>';
+  return h+'</div></div>';
 }
 
 /* ---------- speaking practice ---------- */
@@ -607,6 +710,18 @@ function render(){
     '<button class="stat s3" data-work><b>'+cw.n+'</b><span>ගැඹුරු වැඩ<br>'+cw.u+'</span></button>'+
     '</div>';
 
+  var late=overdue(), mine=tasksOn(today), ahead=aheadCount();
+  h+='<div class="sec"><div class="sechead"><h2>අද කරන්න</h2>'+
+    '<button class="ghost" data-plopen>සැලසුම'+(ahead?' \u00b7 '+ahead:'')+'</button></div>';
+  if(!late.length&&!mine.length){
+    h+='<div class="empty">අද වෙනම වැඩක් දාලා නෑ. රෑට නිදාගන්න කලින් හෙටට දාලා තියන්න — උදේ හිතන්න වෙන්නේ නෑ.</div>';
+  }else{
+    h+='<div class="tlist">';
+    if(late.length) h+=late.map(function(x){return taskRow(x,'late');}).join('');
+    h+=mine.map(function(x){return taskRow(x,'today');}).join('')+'</div>';
+  }
+  h+='</div>';
+
   h+='<div class="sec"><div class="sechead"><h2>දවසේ නූල</h2>'+
     '<button class="ghost" data-edit>'+(editing?'ඉවරයි':'පුරුදු තෝරන්න')+'</button></div>'+
     '<div class="hint">'+(editing
@@ -692,6 +807,7 @@ function render(){
   if(T.open) h+=veil();
   if(W.open) h+=workVeil();
   if(Pr.open) h+=speakVeil();
+  if(Pl.open) h+=plannerVeil();
   if(sheet) h+=sheetHTML();
   root.innerHTML=h;
 }
@@ -709,10 +825,24 @@ root.addEventListener('click',function(ev){
     '[data-edit],[data-add],[data-del],[data-goal],[data-reset],[data-install],[data-out],[data-in],'+
     '[data-copy],[data-restore],[data-sheetclose],[data-wlen],[data-wstart],[data-wstop],'+
     '[data-wclose],[data-work],[data-wtag],[data-speak],[data-plen],[data-pstart],'+
-    '[data-pstop],[data-pskip],[data-pclose],[data-easy],[data-hard],[data-h]');
+    '[data-pstop],[data-pskip],[data-pclose],[data-easy],[data-hard],[data-plopen],'+
+    '[data-plclose],[data-day],[data-tadd],[data-tt],[data-tdel],[data-ttoday],[data-h]');
   if(!t) return;
 
-  if(t.hasAttribute('data-speak')){if(T.running||W.running)return;ensureTopic();Pr.open=true;Pr.rate=false;render();}
+  if(t.hasAttribute('data-plopen')){Pl.open=true;Pl.day=ymd(new Date());taskText='';render();}
+  else if(t.hasAttribute('data-plclose')){Pl.open=false;taskText='';render();}
+  else if(t.hasAttribute('data-day')){Pl.day=t.getAttribute('data-day');render();}
+  else if(t.hasAttribute('data-tadd')){
+    var ti=root.querySelector('#tin');
+    if(addTask(t.getAttribute('data-tadd'),ti.value)){
+      taskText=''; render();
+      var f=root.querySelector('#tin'); if(f) f.focus();
+    } else ti.focus();
+  }
+  else if(t.hasAttribute('data-tt')){toggleTask(t.getAttribute('data-tt'));render();}
+  else if(t.hasAttribute('data-tdel')){dropTask(t.getAttribute('data-tdel'));render();}
+  else if(t.hasAttribute('data-ttoday')){moveTask(t.getAttribute('data-ttoday'),ymd(new Date()));render();}
+  else if(t.hasAttribute('data-speak')){if(T.running||W.running)return;ensureTopic();Pr.open=true;Pr.rate=false;render();}
   else if(t.hasAttribute('data-plen')){S.speak.len=+t.getAttribute('data-plen');save();render();}
   else if(t.hasAttribute('data-pstart')) startSpeak();
   else if(t.hasAttribute('data-pstop')) stopSpeak();
@@ -781,30 +911,7 @@ root.addEventListener('click',function(ev){
     try{
       var o=JSON.parse(v);
       if(!o||typeof o!=='object') throw 0;
-      S.off=o.off||{}; S.log=o.log||{};
-      S.goal=typeof o.goal==='number'?o.goal:25000;
-      S.entries=Array.isArray(o.entries)?o.entries:[];
-      S.med=o.med&&typeof o.med==='object'?o.med:{total:0,len:10,days:{}};
-      if(typeof S.med.total!=='number') S.med.total=0;
-      if(!S.med.days) S.med.days={};
-      S.work=o.work&&typeof o.work==='object'?o.work:{total:0,len:50,days:{},clean:0};
-      if(typeof S.work.total!=='number') S.work.total=0;
-      if(!S.work.days) S.work.days={};
-      if(typeof S.work.clean!=='number') S.work.clean=0;
-      if(!S.work.tags) S.work.tags={en:0,ja:0,other:0};
-      S.speak=v.speak&&typeof v.speak==='object'?v.speak:JSON.parse(JSON.stringify(FRESH.speak));
-      if(!S.speak.done) S.speak.done={};
-      if(!Array.isArray(S.speak.again)) S.speak.again=[];
-      if(!Array.isArray(S.speak.pats)) S.speak.pats=[];
-      if(!S.speak.level) S.speak.level=1;
-      if(!S.speak.len) S.speak.len=3;
-      S.speak=o.speak&&typeof o.speak==='object'?o.speak:JSON.parse(JSON.stringify(FRESH.speak));
-      if(!S.speak.done) S.speak.done={};
-      if(!Array.isArray(S.speak.again)) S.speak.again=[];
-      if(!Array.isArray(S.speak.pats)) S.speak.pats=[];
-      if(!S.speak.level) S.speak.level=1;
-      if(!S.speak.len) S.speak.len=3;
-      T.len=S.med.len||10; W.len=S.work.len||50; W.tag=S.work.tag||'en';
+      adopt(o);
       save(); sheet=null; msg=null; render();
     }catch(e){ msg={t:'පෙළ හරි නෑ. උපස්ථය මුළුමනින්ම අලවලා තියෙනවද බලන්න.',bad:true}; render(); }
   }
@@ -813,8 +920,13 @@ root.addEventListener('click',function(ev){
 
 root.addEventListener('input',function(ev){
   if(ev.target.id==='bk') sheetText=ev.target.value;
+  if(ev.target.id==='tin') taskText=ev.target.value;
 });
 root.addEventListener('keydown',function(ev){
+  if(ev.key==='Enter'&&ev.target.id==='tin'){
+    ev.preventDefault();
+    var ab=root.querySelector('[data-tadd]'); if(ab) ab.click(); return;
+  }
   if(ev.key==='Enter'&&ev.target.id==='amt'){
     ev.preventDefault();
     var b=root.querySelector('[data-add]'); if(b) b.click(); return;
@@ -845,24 +957,43 @@ document.addEventListener('visibilitychange',function(){
 });
 
 /* ---------- boot ---------- */
+function adopt(v){
+  S.off=v.off||{}; S.log=v.log||{};
+  S.goal=typeof v.goal==='number'?v.goal:25000;
+  S.entries=Array.isArray(v.entries)?v.entries:[];
+
+  S.med=v.med&&typeof v.med==='object'?v.med:{total:0,len:10,days:{}};
+  if(typeof S.med.total!=='number') S.med.total=0;
+  if(!S.med.days) S.med.days={};
+
+  S.work=v.work&&typeof v.work==='object'?v.work:{total:0,len:50,days:{},clean:0,tags:{en:0,ja:0,other:0}};
+  if(typeof S.work.total!=='number') S.work.total=0;
+  if(!S.work.days) S.work.days={};
+  if(typeof S.work.clean!=='number') S.work.clean=0;
+  if(!S.work.tags) S.work.tags={en:0,ja:0,other:0};
+
+  S.speak=v.speak&&typeof v.speak==='object'?v.speak:JSON.parse(JSON.stringify(FRESH.speak));
+  if(!S.speak.done) S.speak.done={};
+  if(!Array.isArray(S.speak.again)) S.speak.again=[];
+  if(!Array.isArray(S.speak.pats)) S.speak.pats=[];
+  if(!S.speak.level) S.speak.level=1;
+  if(!S.speak.len) S.speak.len=3;
+  if(typeof S.speak.count!=='number') S.speak.count=0;
+  if(typeof S.speak.mins!=='number') S.speak.mins=0;
+
+  S.tasks=Array.isArray(v.tasks)?v.tasks:[];
+
+  T.len=S.med.len||10; W.len=S.work.len||50; W.tag=S.work.tag||'en';
+}
+
+
 store.get().then(function(raw){
   if(raw){
     try{
-      var v=JSON.parse(raw);
-      S.off=v.off||{}; S.log=v.log||{};
-      S.goal=typeof v.goal==='number'?v.goal:25000;
-      S.entries=Array.isArray(v.entries)?v.entries:[];
-      S.med=v.med&&typeof v.med==='object'?v.med:{total:0,len:10,days:{}};
-      if(typeof S.med.total!=='number') S.med.total=0;
-      if(!S.med.days) S.med.days={};
-      S.work=v.work&&typeof v.work==='object'?v.work:{total:0,len:50,days:{},clean:0};
-      if(typeof S.work.total!=='number') S.work.total=0;
-      if(!S.work.days) S.work.days={};
-      if(typeof S.work.clean!=='number') S.work.clean=0;
-      if(!S.work.tags) S.work.tags={en:0,ja:0,other:0};
-      T.len=S.med.len||10; W.len=S.work.len||50; W.tag=S.work.tag||'en';
+      adopt(JSON.parse(raw));
     }catch(e){}
   }
+  pruneTasks();
   render();
 }).catch(render);
 
