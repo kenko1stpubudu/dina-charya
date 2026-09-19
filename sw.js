@@ -1,6 +1,6 @@
 /* දින චර්යා — offline service worker
    Bump CACHE when you change any file, otherwise phones keep the old copy. */
-var CACHE = 'dina-charya-v6';
+var CACHE = 'dina-charya-v7';
 
 var ASSETS = [
   './',
